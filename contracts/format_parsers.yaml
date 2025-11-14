@@ -1,0 +1,84 @@
+# API Contract: format_parsers
+# Container format demuxing and parsing
+
+version: "0.1.0"
+component: format_parsers
+dependencies:
+  - shared_types
+
+public_api:
+  Mp4Demuxer:
+    implements: Demuxer
+    methods:
+      - new:
+          returns: Self
+      - parse:
+          args:
+            - data: &[u8]
+          returns: Result<MediaInfo, MediaError>
+      - get_video_track:
+          args:
+            - track_id: u32
+          returns: Option<VideoTrack>
+      - get_audio_track:
+          args:
+            - track_id: u32
+          returns: Option<AudioTrack>
+
+  WebmDemuxer:
+    implements: Demuxer
+    methods:
+      - new:
+          returns: Self
+      - parse:
+          args:
+            - data: &[u8]
+          returns: Result<MediaInfo, MediaError>
+
+  OggDemuxer:
+    implements: Demuxer
+    methods:
+      - new:
+          returns: Self
+      - parse:
+          args:
+            - data: &[u8]
+          returns: Result<MediaInfo, MediaError>
+
+  MatroskaDemuxer:
+    implements: Demuxer
+    methods:
+      - new:
+          returns: Self
+      - parse:
+          args:
+            - data: &[u8]
+          returns: Result<MediaInfo, MediaError>
+
+types:
+  MediaInfo:
+    type: struct
+    fields:
+      duration: Duration
+      video_tracks: Vec<VideoTrackInfo>
+      audio_tracks: Vec<AudioTrackInfo>
+      metadata: HashMap<String, String>
+
+  VideoTrackInfo:
+    type: struct
+    fields:
+      track_id: u32
+      codec: VideoCodec
+      width: u32
+      height: u32
+      frame_rate: f32
+      bitrate: Option<u32>
+
+  AudioTrackInfo:
+    type: struct
+    fields:
+      track_id: u32
+      codec: AudioCodec
+      sample_rate: u32
+      channels: u8
+      bitrate: Option<u32>

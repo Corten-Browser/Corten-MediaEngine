@@ -1,0 +1,29 @@
+[package]
+name = "cortenbrowser-audio_decoders"
+version = "0.1.0"
+edition = "2021"
+authors = ["CortenBrowser Team"]
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+# Shared types from Corten Media Engine
+cortenbrowser-shared_types = { path = "../shared_types" }
+
+# Audio codec libraries
+opus = "0.3"           # Opus codec
+minimp3 = "0.5"        # MP3 decoder
+lewton = "0.10"        # Vorbis decoder
+symphonia = { version = "0.5", features = ["aac"] }  # AAC via Symphonia (pure Rust, safer than fdk-aac)
+
+# Error handling
+thiserror = "1.0"
+
+# Async runtime
+tokio = { version = "1.35", features = ["sync"] }
+
+[dev-dependencies]
+# Testing utilities
+tempfile = "3.8"       # Temporary files for test data
+
+[features]
+default = []

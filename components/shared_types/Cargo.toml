@@ -1,0 +1,18 @@
+[package]
+name = "cortenbrowser-shared_types"
+version = "0.1.0"
+edition = "2021"
+authors = ["CortenBrowser Team"]
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+uuid = { version = "1.7", features = ["v4", "serde"] }
+tokio = { version = "1.35", features = ["sync"] }
+thiserror = "1.0"
+
+[dev-dependencies]
+tokio = { version = "1.35", features = ["full", "test-util"] }
+tokio-test = "0.4"
+
+[features]
+default = []

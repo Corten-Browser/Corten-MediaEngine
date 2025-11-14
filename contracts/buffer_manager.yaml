@@ -1,0 +1,81 @@
+# API Contract: buffer_manager
+# Memory buffer and cache management
+
+version: "0.1.0"
+component: buffer_manager
+dependencies:
+  - shared_types
+
+public_api:
+  RingBuffer:
+    methods:
+      - new:
+          args:
+            - capacity: usize
+          returns: Self
+      - write:
+          args:
+            - data: &[u8]
+          returns: Result<usize, BufferError>
+      - read:
+          args:
+            - buf: &mut [u8]
+          returns: Result<usize, BufferError>
+      - available:
+          returns: usize
+      - capacity:
+          returns: usize
+
+  FrameCache:
+    methods:
+      - new:
+          args:
+            - max_frames: usize
+          returns: Self
+      - insert:
+          args:
+            - frame: VideoFrame
+          returns: Result<(), BufferError>
+      - get:
+          args:
+            - timestamp: Duration
+          returns: Option<VideoFrame>
+      - evict_before:
+          args:
+            - timestamp: Duration
+          returns: usize
+
+  BufferManager:
+    methods:
+      - new:
+          args:
+            - config: BufferConfig
+          returns: Self
+      - allocate_video_buffer:
+          args:
+            - size: usize
+          returns: Result<VideoFrameBuffer, BufferError>
+      - allocate_audio_buffer:
+          args:
+            - samples: usize
+          returns: Result<AudioSampleBuffer, BufferError>
+      - get_memory_usage:
+          returns: usize
+      - cleanup:
+          returns: usize
+
+types:
+  BufferConfig:
+    type: struct
+    fields:
+      max_memory: usize
+      max_video_frames: usize
+      max_audio_buffers: usize
+
+  BufferError:
+    type: enum
+    variants:
+      - OutOfMemory: {}
+      - BufferFull: {}
+      - BufferEmpty: {}
+      - InvalidSize: {}

@@ -1,0 +1,38 @@
+{
+  "project_name": "Corten-MediaEngine",
+  "version": "0.1.0",
+  "lifecycle_state": "pre-release",
+  "breaking_changes_policy": "encouraged",
+  "api_locked": false,
+  "description": "Media playback engine for CortenBrowser with support for various formats and codecs",
+  "language": "rust",
+  "created_date": "2025-11-14",
+  "last_updated": "2025-11-14",
+  "status": "development",
+  "readme": {
+    "present": true,
+    "path": "README.md"
+  },
+  "documentation": {
+    "specification": "media-engine-specification.md",
+    "adr_directory": "docs/adr/",
+    "quality_dashboard": "docs/quality-dashboard.md"
+  },
+  "architecture": {
+    "style": "component-based",
+    "components_directory": "components/",
+    "contracts_directory": "contracts/",
+    "shared_libs_directory": "shared-libs/"
+  },
+  "quality_gates": {
+    "test_coverage_minimum": 80,
+    "tdd_required": true,
+    "bdd_required": true,
+    "linting_required": true,
+    "documentation_required": true
+  },
+  "deployment": {
+    "target_platforms": ["linux", "macos", "windows"],
+    "minimum_rust_version": "1.70.0"
+  }
+}

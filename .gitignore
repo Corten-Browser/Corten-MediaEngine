@@ -35,3 +35,18 @@ orchestration/.idea/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Rust build artifacts
+target/
+**/.cargo/
+Cargo.lock
+*.rlib
+*.rmeta
+*.so
+*.dylib
+*.dll
+*.a
+
+# Rust debugging
+*.pdb
+

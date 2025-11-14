@@ -1,0 +1,95 @@
+# API Contract: media_engine
+# Main public API and component coordination
+
+version: "0.1.0"
+component: media_engine
+dependencies:
+  - shared_types
+  - media_session
+  - format_parsers
+  - video_decoders
+  - audio_decoders
+  - buffer_manager
+  - media_pipeline
+  - hardware_accel
+
+public_api:
+  MediaEngineImpl:
+    implements: MediaEngine
+    methods:
+      - new:
+          args:
+            - config: MediaEngineConfig
+          returns: Result<Self, MediaError>
+      - create_session:
+          args:
+            - config: MediaSessionConfig
+          returns: Result<SessionId, MediaError>
+          async: true
+      - load_source:
+          args:
+            - session: SessionId
+            - source: MediaSource
+          returns: Result<(), MediaError>
+          async: true
+      - play:
+          args:
+            - session: SessionId
+          returns: Result<(), MediaError>
+          async: true
+      - pause:
+          args:
+            - session: SessionId
+          returns: Result<(), MediaError>
+          async: true
+      - seek:
+          args:
+            - session: SessionId
+            - position: Duration
+          returns: Result<(), MediaError>
+          async: true
+      - destroy_session:
+          args:
+            - session: SessionId
+          returns: Result<(), MediaError>
+          async: true
+
+types:
+  MediaEngineConfig:
+    type: struct
+    fields:
+      hardware_accel_enabled: bool
+      max_sessions: usize
+      buffer_config: BufferConfig
+      pipeline_config: PipelineConfig
+
+  MediaEngineMessage:
+    type: enum
+    description: "Messages the Media Engine handles"
+    variants:
+      - CreateMediaElement:
+          element_id: String
+          attributes: MediaElementAttributes
+      - StreamData:
+          session_id: SessionId
+          chunk: MediaChunk
+      - PlaybackCommand:
+          session_id: SessionId
+          command: PlaybackCommand
+
+  MediaEngineEvent:
+    type: enum
+    description: "Events the Media Engine emits"
+    variants:
+      - VideoFrameReady:
+          session_id: SessionId
+          frame: VideoFrame
+      - AudioSamplesReady:
+          session_id: SessionId
+          buffer: AudioBuffer
+      - PlaybackStateChanged:
+          session_id: SessionId
+          state: SessionState
+      - MediaError:
+          session_id: SessionId
+          error: MediaError

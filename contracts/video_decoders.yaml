@@ -1,0 +1,58 @@
+# API Contract: video_decoders
+# Video codec implementations
+
+version: "0.1.0"
+component: video_decoders
+dependencies:
+  - shared_types
+
+public_api:
+  H264Decoder:
+    implements: VideoDecoder
+    methods:
+      - new:
+          returns: Result<Self, MediaError>
+      - decode:
+          args:
+            - packet: &VideoPacket
+          returns: Result<VideoFrame, MediaError>
+      - flush:
+          returns: Result<Vec<VideoFrame>, MediaError>
+
+  VP9Decoder:
+    implements: VideoDecoder
+    methods:
+      - new:
+          returns: Result<Self, MediaError>
+      - decode:
+          args:
+            - packet: &VideoPacket
+          returns: Result<VideoFrame, MediaError>
+
+  AV1Decoder:
+    implements: VideoDecoder
+    methods:
+      - new:
+          returns: Result<Self, MediaError>
+      - decode:
+          args:
+            - packet: &VideoPacket
+          returns: Result<VideoFrame, MediaError>
+
+  DecoderFactory:
+    methods:
+      - create_decoder:
+          description: "Create appropriate decoder for codec"
+          args:
+            - codec: VideoCodec
+          returns: Result<Box<dyn VideoDecoder>, MediaError>
+
+types:
+  VideoPacket:
+    type: struct
+    fields:
+      data: Vec<u8>
+      timestamp: Duration
+      duration: Option<Duration>
+      keyframe: bool
+      codec: VideoCodec

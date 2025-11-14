@@ -1,0 +1,17 @@
+[package]
+name = "cortenbrowser-webrtc_integration"
+version = "0.1.0"
+edition = "2021"
+authors = ["CortenBrowser Team"]
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+cortenbrowser-shared_types = { path = "../shared_types" }
+thiserror = "1.0"
+rand = "0.8"
+
+[dev-dependencies]
+# Test dependencies
+
+[features]
+default = []

@@ -1,0 +1,58 @@
+# API Contract: audio_decoders
+# Audio codec implementations
+
+version: "0.1.0"
+component: audio_decoders
+dependencies:
+  - shared_types
+
+public_api:
+  OpusDecoder:
+    implements: AudioDecoder
+    methods:
+      - new:
+          args:
+            - sample_rate: u32
+            - channels: u8
+          returns: Result<Self, MediaError>
+      - decode:
+          args:
+            - packet: &AudioPacket
+          returns: Result<AudioBuffer, MediaError>
+
+  AACDecoder:
+    implements: AudioDecoder
+    methods:
+      - new:
+          returns: Result<Self, MediaError>
+      - decode:
+          args:
+            - packet: &AudioPacket
+          returns: Result<AudioBuffer, MediaError>
+
+  MP3Decoder:
+    implements: AudioDecoder
+    methods:
+      - new:
+          returns: Result<Self, MediaError>
+      - decode:
+          args:
+            - packet: &AudioPacket
+          returns: Result<AudioBuffer, MediaError>
+
+  DecoderFactory:
+    methods:
+      - create_decoder:
+          description: "Create appropriate decoder for codec"
+          args:
+            - codec: AudioCodec
+          returns: Result<Box<dyn AudioDecoder>, MediaError>
+
+types:
+  AudioPacket:
+    type: struct
+    fields:
+      data: Vec<u8>
+      timestamp: Duration
+      duration: Duration
+      codec: AudioCodec

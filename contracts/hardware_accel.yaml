@@ -1,0 +1,67 @@
+# API Contract: hardware_accel
+# Hardware-accelerated video decoding
+
+version: "0.1.0"
+component: hardware_accel
+dependencies:
+  - shared_types
+  - video_decoders
+
+public_api:
+  HardwareContext:
+    methods:
+      - new:
+          returns: Result<Self, HardwareError>
+      - is_codec_supported:
+          args:
+            - codec: VideoCodec
+          returns: bool
+      - create_decoder:
+          args:
+            - codec: VideoCodec
+          returns: Result<Box<dyn VideoDecoder>, HardwareError>
+      - get_capabilities:
+          returns: HardwareCapabilities
+
+  VAAPIDecoder:
+    implements: VideoDecoder
+    description: "Linux VA-API hardware decoder"
+    methods:
+      - new:
+          args:
+            - codec: VideoCodec
+          returns: Result<Self, HardwareError>
+
+  DXVADecoder:
+    implements: VideoDecoder
+    description: "Windows DXVA hardware decoder"
+    methods:
+      - new:
+          args:
+            - codec: VideoCodec
+          returns: Result<Self, HardwareError>
+
+  VideoToolboxDecoder:
+    implements: VideoDecoder
+    description: "macOS VideoToolbox hardware decoder"
+    methods:
+      - new:
+          args:
+            - codec: VideoCodec
+          returns: Result<Self, HardwareError>
+
+types:
+  HardwareCapabilities:
+    type: struct
+    fields:
+      supported_codecs: Vec<VideoCodec>
+      max_resolution: (u32, u32)
+      max_framerate: f32
+
+  HardwareError:
+    type: enum
+    variants:
+      - NotAvailable: {}
+      - UnsupportedCodec: {}
+      - InitializationFailed: {}
+      - DecodeFailed: {}
