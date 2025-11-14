@@ -1,0 +1,61 @@
+# API Contract: webrtc_integration
+# WebRTC media stream handling
+
+version: "0.1.0"
+component: webrtc_integration
+dependencies:
+  - shared_types
+  - video_decoders
+  - audio_decoders
+
+public_api:
+  WebRTCEncoder:
+    methods:
+      - new:
+          args:
+            - codec: VideoCodec
+            - config: EncoderConfig
+          returns: Result<Self, MediaError>
+      - encode:
+          args:
+            - frame: &VideoFrame
+          returns: Result<Vec<u8>, MediaError>
+
+  RTPPacketizer:
+    methods:
+      - new:
+          returns: Self
+      - packetize:
+          args:
+            - payload: &[u8]
+            - timestamp: u32
+          returns: Vec<RTPPacket>
+
+  JitterBuffer:
+    methods:
+      - new:
+          args:
+            - capacity: usize
+          returns: Self
+      - insert:
+          args:
+            - packet: RTPPacket
+          returns: Result<(), MediaError>
+      - get_next:
+          returns: Option<RTPPacket>
+
+types:
+  RTPPacket:
+    type: struct
+    fields:
+      payload: Vec<u8>
+      sequence_number: u16
+      timestamp: u32
+      ssrc: u32
+
+  EncoderConfig:
+    type: struct
+    fields:
+      bitrate: u32
+      framerate: u32
+      keyframe_interval: u32

@@ -1,0 +1,237 @@
+# API Contract: shared_types
+# Common types, enums, and traits used across all media components
+
+version: "0.1.0"
+component: shared_types
+type: interface_definitions
+
+types:
+  VideoCodec:
+    type: enum
+    description: "Supported video codec types"
+    variants:
+      - H264:
+          profile: H264Profile
+          level: H264Level
+          hardware_accel: bool
+      - H265:
+          profile: H265Profile
+          tier: H265Tier
+          level: H265Level
+      - VP8: {}
+      - VP9:
+          profile: VP9Profile
+      - AV1:
+          profile: AV1Profile
+          level: AV1Level
+      - Theora: {}
+
+  AudioCodec:
+    type: enum
+    description: "Supported audio codec types"
+    variants:
+      - AAC:
+          profile: AACProfile
+          sample_rate: u32
+          channels: u8
+      - MP3:
+          layer: MP3Layer
+          bitrate: u32
+      - Opus:
+          sample_rate: u32
+          channels: u8
+          application: OpusApplication
+      - Vorbis: {}
+      - FLAC: {}
+      - PCM:
+          format: PCMFormat
+          sample_rate: u32
+          channels: u8
+
+  MediaSource:
+    type: enum
+    description: "Source of media data"
+    variants:
+      - Url:
+          url: String
+      - Buffer:
+          data: Vec<u8>
+          mime_type: String
+      - Stream:
+          receiver: mpsc::Receiver<MediaChunk>
+          mime_type: String
+      - MSE:
+          source_buffers: Vec<SourceBuffer>
+      - WebRTC:
+          peer_connection: Arc<PeerConnection>
+          track_id: String
+      - Capture:
+          device: CaptureDevice
+          constraints: MediaConstraints
+
+  VideoFrame:
+    type: struct
+    description: "Decoded video frame data"
+    fields:
+      width: u32
+      height: u32
+      format: PixelFormat
+      data: Vec<u8>
+      timestamp: Duration
+      duration: Option<Duration>
+      metadata: FrameMetadata
+
+  AudioBuffer:
+    type: struct
+    description: "Decoded audio sample buffer"
+    fields:
+      format: AudioFormat
+      sample_rate: u32
+      channels: u8
+      samples: Vec<f32>
+      timestamp: Duration
+      duration: Duration
+
+  MediaError:
+    type: enum
+    description: "Media engine error types"
+    variants:
+      - UnsupportedFormat:
+          format: String
+      - CodecError:
+          details: String
+      - NetworkError:
+          details: String
+      - DrmError:
+          details: String
+      - HardwareError:
+          details: String
+      - OutOfMemory: {}
+      - InvalidStateTransition:
+          from: SessionState
+          to: SessionState
+
+  PixelFormat:
+    type: enum
+    variants:
+      - YUV420: {}
+      - YUV422: {}
+      - YUV444: {}
+      - RGB24: {}
+      - RGBA32: {}
+      - NV12: {}
+
+  AudioFormat:
+    type: enum
+    variants:
+      - F32LE: {}
+      - S16LE: {}
+      - S24LE: {}
+      - S32LE: {}
+
+  SessionId:
+    type: newtype
+    inner: uuid::Uuid
+    description: "Unique identifier for media session"
+
+traits:
+  MediaEngine:
+    description: "Main media engine interface"
+    methods:
+      - create_session:
+          args:
+            - config: MediaSessionConfig
+          returns: Result<SessionId, MediaError>
+          async: true
+
+      - load_source:
+          args:
+            - session: SessionId
+            - source: MediaSource
+          returns: Result<(), MediaError>
+          async: true
+
+      - play:
+          args:
+            - session: SessionId
+          returns: Result<(), MediaError>
+          async: true
+
+      - pause:
+          args:
+            - session: SessionId
+          returns: Result<(), MediaError>
+          async: true
+
+      - seek:
+          args:
+            - session: SessionId
+            - position: Duration
+          returns: Result<(), MediaError>
+          async: true
+
+      - set_volume:
+          args:
+            - session: SessionId
+            - volume: f32
+          returns: Result<(), MediaError>
+          async: true
+
+      - get_video_frame:
+          args:
+            - session: SessionId
+          returns: Result<VideoFrame, MediaError>
+          async: true
+
+      - get_audio_samples:
+          args:
+            - session: SessionId
+            - count: usize
+          returns: Result<AudioBuffer, MediaError>
+          async: true
+
+      - destroy_session:
+          args:
+            - session: SessionId
+          returns: Result<(), MediaError>
+          async: true
+
+  Demuxer:
+    description: "Container format demuxer interface"
+    methods:
+      - parse:
+          args:
+            - data: &[u8]
+          returns: Result<MediaInfo, MediaError>
+
+      - get_video_packets:
+          args: []
+          returns: mpsc::Receiver<VideoPacket>
+
+      - get_audio_packets:
+          args: []
+          returns: mpsc::Receiver<AudioPacket>
+
+  VideoDecoder:
+    description: "Video decoder interface"
+    methods:
+      - decode:
+          args:
+            - packet: &VideoPacket
+          returns: Result<VideoFrame, MediaError>
+
+      - flush:
+          args: []
+          returns: Result<Vec<VideoFrame>, MediaError>
+
+  AudioDecoder:
+    description: "Audio decoder interface"
+    methods:
+      - decode:
+          args:
+            - packet: &AudioPacket
+          returns: Result<AudioBuffer, MediaError>
+
+      - flush:
+          args: []
+          returns: Result<Vec<AudioBuffer>, MediaError>

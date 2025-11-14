@@ -1,0 +1,83 @@
+# API Contract: media_session
+# Media session lifecycle and state management
+
+version: "0.1.0"
+component: media_session
+dependencies:
+  - shared_types
+
+types:
+  MediaSession:
+    type: struct
+    description: "Represents a media playback session"
+    fields:
+      id: SessionId
+      state: Arc<RwLock<SessionState>>
+      created_at: SystemTime
+      updated_at: SystemTime
+
+  SessionState:
+    type: enum
+    description: "Media session state machine"
+    variants:
+      - Idle: {}
+      - Loading:
+          source: MediaSource
+          progress: f32
+      - Ready:
+          duration: Duration
+          metadata: MediaMetadata
+      - Playing:
+          position: Duration
+          rate: f32
+      - Paused:
+          position: Duration
+      - Seeking:
+          target: Duration
+      - Ended: {}
+      - Error:
+          error: MediaError
+
+  MediaMetadata:
+    type: struct
+    fields:
+      title: Option<String>
+      artist: Option<String>
+      album: Option<String>
+      duration: Duration
+      video_tracks: Vec<VideoTrackInfo>
+      audio_tracks: Vec<AudioTrackInfo>
+
+public_api:
+  SessionManager:
+    methods:
+      - create:
+          description: "Create new media session"
+          args:
+            - config: MediaSessionConfig
+          returns: Result<SessionId, MediaError>
+
+      - get:
+          description: "Get existing session"
+          args:
+            - id: SessionId
+          returns: Option<Arc<MediaSession>>
+
+      - destroy:
+          description: "Destroy and cleanup session"
+          args:
+            - id: SessionId
+          returns: Result<(), MediaError>
+
+      - transition_state:
+          description: "Transition session state with validation"
+          args:
+            - id: SessionId
+            - new_state: SessionState
+          returns: Result<(), MediaError>
+
+      - get_state:
+          description: "Get current session state"
+          args:
+            - id: SessionId
+          returns: Result<SessionState, MediaError>

@@ -1,0 +1,69 @@
+# API Contract: media_pipeline
+# Pipeline orchestration and A/V synchronization
+
+version: "0.1.0"
+component: media_pipeline
+dependencies:
+  - shared_types
+  - format_parsers
+  - video_decoders
+  - audio_decoders
+  - buffer_manager
+
+public_api:
+  MediaPipeline:
+    methods:
+      - new:
+          args:
+            - config: PipelineConfig
+          returns: Result<Self, MediaError>
+      - load_source:
+          args:
+            - source: MediaSource
+          returns: Result<(), MediaError>
+          async: true
+      - start:
+          returns: Result<(), MediaError>
+          async: true
+      - stop:
+          returns: Result<(), MediaError>
+          async: true
+      - seek:
+          args:
+            - position: Duration
+          returns: Result<(), MediaError>
+          async: true
+      - get_next_video_frame:
+          returns: Option<VideoFrame>
+          async: true
+      - get_next_audio_buffer:
+          returns: Option<AudioBuffer>
+          async: true
+
+  AVSyncController:
+    methods:
+      - new:
+          returns: Self
+      - sync_frame:
+          args:
+            - video_frame: &VideoFrame
+            - audio_timestamp: Duration
+          returns: SyncDecision
+      - get_clock:
+          returns: Duration
+
+types:
+  PipelineConfig:
+    type: struct
+    fields:
+      buffer_size: usize
+      thread_count: usize
+      sync_threshold: Duration
+
+  SyncDecision:
+    type: enum
+    variants:
+      - Display: {}
+      - Drop: {}
+      - Wait:
+          duration: Duration

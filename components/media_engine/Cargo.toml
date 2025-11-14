@@ -1,0 +1,48 @@
+[package]
+name = "cortenbrowser-media_engine"
+version = "0.1.0"
+edition = "2021"
+authors = ["CortenBrowser Team"]
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+# Internal component dependencies
+cortenbrowser-shared_types = { path = "../shared_types" }
+cortenbrowser-media_session = { path = "../media_session" }
+cortenbrowser-format_parsers = { path = "../format_parsers" }
+cortenbrowser-video_decoders = { path = "../video_decoders" }
+cortenbrowser-audio_decoders = { path = "../audio_decoders" }
+cortenbrowser-buffer_manager = { path = "../buffer_manager" }
+cortenbrowser-media_pipeline = { path = "../media_pipeline" }
+cortenbrowser-hardware_accel = { path = "../hardware_accel" }
+cortenbrowser-webrtc_integration = { path = "../webrtc_integration" }
+cortenbrowser-drm_support = { path = "../drm_support" }
+cortenbrowser-media_capture = { path = "../media_capture" }
+
+# Async runtime
+tokio = { version = "1.35", features = ["full"] }
+
+# Concurrency
+parking_lot = "0.12"
+crossbeam-channel = "0.5"
+
+# Error handling
+thiserror = "1.0"
+
+# Logging/tracing
+tracing = "0.1"
+
+# Metrics
+metrics = "0.21"
+
+# Async trait
+async-trait = "0.1"
+
+[dev-dependencies]
+# Testing
+tokio-test = "0.4"
+tempfile = "3.8"
+criterion = "0.5"
+
+[features]
+default = []

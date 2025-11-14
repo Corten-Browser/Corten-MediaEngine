@@ -1,0 +1,57 @@
+# API Contract: drm_support
+# DRM and Encrypted Media Extensions
+
+version: "0.1.0"
+component: drm_support
+dependencies:
+  - shared_types
+
+public_api:
+  ContentDecryptionModule:
+    methods:
+      - new:
+          args:
+            - key_system: String
+          returns: Result<Self, DrmError>
+      - create_session:
+          returns: Result<DrmSessionId, DrmError>
+          async: true
+      - generate_request:
+          args:
+            - session_id: DrmSessionId
+            - init_data: &[u8]
+          returns: Result<Vec<u8>, DrmError>
+          async: true
+      - update:
+          args:
+            - session_id: DrmSessionId
+            - response: &[u8]
+          returns: Result<(), DrmError>
+          async: true
+      - decrypt:
+          args:
+            - data: &[u8]
+            - key_id: &[u8]
+          returns: Result<Vec<u8>, DrmError>
+
+  EMEInterface:
+    methods:
+      - request_media_key_system_access:
+          args:
+            - key_system: String
+            - configs: Vec<MediaKeySystemConfiguration>
+          returns: Result<MediaKeySystemAccess, DrmError>
+          async: true
+
+types:
+  DrmSessionId:
+    type: newtype
+    inner: String
+
+  DrmError:
+    type: enum
+    variants:
+      - UnsupportedKeySystem: {}
+      - LicenseRequestFailed: {}
+      - DecryptionFailed: {}
+      - SessionNotFound: {}

@@ -1,0 +1,92 @@
+# API Contract: media_capture
+# Device capture APIs
+
+version: "0.1.0"
+component: media_capture
+dependencies:
+  - shared_types
+  - video_decoders
+  - audio_decoders
+
+public_api:
+  ScreenCapture:
+    methods:
+      - new:
+          args:
+            - constraints: CaptureConstraints
+          returns: Result<Self, CaptureError>
+      - start:
+          returns: Result<mpsc::Receiver<VideoFrame>, CaptureError>
+          async: true
+      - stop:
+          returns: Result<(), CaptureError>
+
+  CameraCapture:
+    methods:
+      - new:
+          args:
+            - device_id: String
+            - constraints: CaptureConstraints
+          returns: Result<Self, CaptureError>
+      - start:
+          returns: Result<mpsc::Receiver<VideoFrame>, CaptureError>
+          async: true
+      - stop:
+          returns: Result<(), CaptureError>
+
+  MicrophoneCapture:
+    methods:
+      - new:
+          args:
+            - device_id: String
+            - constraints: AudioConstraints
+          returns: Result<Self, CaptureError>
+      - start:
+          returns: Result<mpsc::Receiver<AudioBuffer>, CaptureError>
+          async: true
+      - stop:
+          returns: Result<(), CaptureError>
+
+  DeviceEnumerator:
+    methods:
+      - enumerate_video_devices:
+          returns: Result<Vec<DeviceInfo>, CaptureError>
+          async: true
+      - enumerate_audio_devices:
+          returns: Result<Vec<DeviceInfo>, CaptureError>
+          async: true
+
+types:
+  CaptureConstraints:
+    type: struct
+    fields:
+      width: Option<u32>
+      height: Option<u32>
+      frame_rate: Option<f32>
+
+  AudioConstraints:
+    type: struct
+    fields:
+      sample_rate: Option<u32>
+      channels: Option<u8>
+
+  DeviceInfo:
+    type: struct
+    fields:
+      device_id: String
+      label: String
+      kind: DeviceKind
+
+  DeviceKind:
+    type: enum
+    variants:
+      - VideoInput: {}
+      - AudioInput: {}
+      - AudioOutput: {}
+
+  CaptureError:
+    type: enum
+    variants:
+      - DeviceNotFound: {}
+      - PermissionDenied: {}
+      - CaptureFailure: {}
