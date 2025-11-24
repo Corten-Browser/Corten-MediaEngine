@@ -1,18 +1,44 @@
 {
-  "last_extraction": "2025-11-24T07:11:35.643968",
-  "extraction_method": "pending-llm",
+  "last_extraction": "2025-11-24T07:30:00.000000",
+  "extraction_method": "hybrid",
   "spec_files": [
     {
       "path": "specifications/media-engine-specification.md",
-      "features_extracted": 38,
-      "extraction_method": "automated",
-      "last_processed": "2025-11-24T07:11:35.644023"
+      "features_extracted": 93,
+      "extraction_method": "llm",
+      "last_processed": "2025-11-24T07:30:00.000000"
     }
   ],
-  "total_features": 0,
+  "total_features": 93,
   "automated_features": 0,
-  "llm_features": 0,
-  "llm_extraction_complete": false,
-  "llm_extraction_timestamp": null,
-  "automated_extraction_success": false
+  "llm_features": 93,
+  "llm_extraction_complete": true,
+  "llm_extraction_timestamp": "2025-11-24T07:30:00.000000",
+  "automated_extraction_success": false,
+  "detected_language": "Rust",
+  "language_confidence": "high",
+  "extraction_summary": {
+    "containers": 6,
+    "video_codecs": 6,
+    "audio_codecs": 6,
+    "core_engine": 14,
+    "pipeline": 8,
+    "streaming": 4,
+    "hardware_acceleration": 5,
+    "webrtc": 5,
+    "drm": 4,
+    "capture": 3,
+    "threading": 7,
+    "message_bus": 9,
+    "security": 3,
+    "metrics": 2,
+    "testing": 4,
+    "infrastructure": 3,
+    "performance": 4
+  },
+  "templates_matched": {
+    "media-video-decoder": 6,
+    "media-audio-decoder": 5,
+    "networking-http-client": 1
+  }
 }

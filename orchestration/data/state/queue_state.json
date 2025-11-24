@@ -1,11 +1,1477 @@
 {
-  "tasks": [],
+  "tasks": [
+    {
+      "id": "FEAT-001",
+      "name": "MP4 container parser/demuxer",
+      "description": "Parse MP4 container format (moov, mdat boxes) and extract audio/video tracks with H.264, H.265, AV1, AAC, MP3, Opus codecs",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "2000-3000",
+      "recommended_libraries": [
+        {"name": "mp4", "version": "0.14", "purpose": "MP4 parsing", "registry_url": "https://crates.io/crates/mp4"}
+      ],
+      "acceptance_criteria": [
+        "Parse moov/mdat boxes correctly",
+        "Extract video track metadata (codec, resolution, duration)",
+        "Extract audio track metadata (codec, sample rate, channels)",
+        "Support fragmented MP4 (fMP4)"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Box parsing", "Track extraction", "Duration calculation"],
+        "integration_tests": ["Full MP4 file parsing", "Streaming MP4 parsing"]
+      }
+    },
+    {
+      "id": "FEAT-002",
+      "name": "WebM container parser/demuxer",
+      "description": "Parse WebM container format (EBML/Matroska subset) and extract VP8, VP9, AV1, Vorbis, Opus streams",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "1500-2500",
+      "recommended_libraries": [
+        {"name": "webm-iterable", "version": "0.6", "purpose": "WebM parsing", "registry_url": "https://crates.io/crates/webm-iterable"}
+      ],
+      "acceptance_criteria": [
+        "Parse EBML header and Segment",
+        "Extract video track with VP8/VP9/AV1",
+        "Extract audio track with Vorbis/Opus",
+        "Support seeking via Cues element"
+      ],
+      "test_strategy": {
+        "unit_tests": ["EBML parsing", "Track info extraction"],
+        "integration_tests": ["Full WebM file parsing"]
+      }
+    },
+    {
+      "id": "FEAT-003",
+      "name": "Ogg container parser/demuxer",
+      "description": "Parse Ogg container format for Theora video and Vorbis/Opus audio",
+      "phase": "Phase 1",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "1000-1500",
+      "recommended_libraries": [
+        {"name": "ogg", "version": "0.9", "purpose": "Ogg container", "registry_url": "https://crates.io/crates/ogg"}
+      ],
+      "acceptance_criteria": [
+        "Parse Ogg pages and segments",
+        "Identify Theora, Vorbis, Opus streams",
+        "Support chained Ogg files"
+      ]
+    },
+    {
+      "id": "FEAT-004",
+      "name": "MKV/Matroska container parser",
+      "description": "Parse Matroska/MKV container format with full EBML support",
+      "phase": "Phase 2",
+      "priority": "medium",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "2000-3000",
+      "recommended_libraries": [
+        {"name": "matroska", "version": "0.15", "purpose": "MKV parsing", "registry_url": "https://crates.io/crates/matroska"}
+      ],
+      "acceptance_criteria": [
+        "Parse complete EBML structure",
+        "Extract H.264, VP9, AV1 video tracks",
+        "Extract AAC, Vorbis audio tracks",
+        "Support chapters and subtitles metadata"
+      ]
+    },
+    {
+      "id": "FEAT-005",
+      "name": "MPEG-TS container parser",
+      "description": "Parse MPEG Transport Stream format for H.264/H.265 video and AAC/MP3 audio",
+      "phase": "Phase 2",
+      "priority": "medium",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "2000-2500",
+      "acceptance_criteria": [
+        "Parse PAT/PMT tables",
+        "Extract PES packets",
+        "Support H.264 and H.265 video",
+        "Support AAC and MP3 audio"
+      ]
+    },
+    {
+      "id": "FEAT-006",
+      "name": "FLV container parser",
+      "description": "Parse Flash Video container format",
+      "phase": "Phase 3",
+      "priority": "low",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "800-1200"
+    },
+    {
+      "id": "FEAT-007",
+      "name": "H.264/AVC decoder",
+      "description": "Decode H.264/AVC video streams with profile/level support and hardware acceleration",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": "media-video-decoder",
+      "template_name": "Video Codec Decoder",
+      "difficulty": "expert",
+      "estimated_loc": "10000-20000",
+      "recommended_libraries": [
+        {"name": "openh264", "version": "0.3", "purpose": "H.264 decoder", "registry_url": "https://crates.io/crates/openh264"},
+        {"name": "ffmpeg-next", "version": "6.0", "purpose": "FFmpeg bindings (fallback)", "registry_url": "https://crates.io/crates/ffmpeg-next"}
+      ],
+      "acceptance_criteria": [
+        "Decode H.264 Baseline, Main, High profiles",
+        "Support levels up to 5.2 (4K)",
+        "Hardware acceleration when available",
+        "Software fallback when hardware unavailable",
+        "1080p@30fps in real-time"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Codec initialization", "Frame decoding", "Color space conversion"],
+        "integration_tests": ["Full video stream decoding", "Hardware/software switching"]
+      },
+      "common_pitfalls": [
+        {"issue": "Memory leaks from unreleased frames", "solution": "Implement Drop trait, release FFmpeg resources"},
+        {"issue": "Dropped frames under load", "solution": "Use frame buffer pool, prioritize I-frames"}
+      ]
+    },
+    {
+      "id": "FEAT-008",
+      "name": "H.265/HEVC decoder",
+      "description": "Decode H.265/HEVC video streams with profile/tier/level support",
+      "phase": "Phase 2",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": "media-video-decoder",
+      "difficulty": "expert",
+      "estimated_loc": "8000-15000",
+      "recommended_libraries": [
+        {"name": "ffmpeg-next", "version": "6.0", "purpose": "H.265 decoding via FFmpeg", "registry_url": "https://crates.io/crates/ffmpeg-next"}
+      ],
+      "acceptance_criteria": [
+        "Decode H.265 Main, Main 10 profiles",
+        "Support 4K and 8K resolutions",
+        "Hardware acceleration (VAAPI, NVDEC)"
+      ]
+    },
+    {
+      "id": "FEAT-009",
+      "name": "VP8 decoder",
+      "description": "Decode VP8 video codec",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": "media-video-decoder",
+      "difficulty": "hard",
+      "estimated_loc": "3000-5000",
+      "recommended_libraries": [
+        {"name": "vpx", "version": "0.1", "purpose": "VP8/VP9 codec bindings", "registry_url": "https://crates.io/crates/vpx"}
+      ]
+    },
+    {
+      "id": "FEAT-010",
+      "name": "VP9 decoder",
+      "description": "Decode VP9 video codec with profile support",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": "media-video-decoder",
+      "difficulty": "hard",
+      "estimated_loc": "4000-6000",
+      "recommended_libraries": [
+        {"name": "vpx", "version": "0.1", "purpose": "VP9 codec bindings", "registry_url": "https://crates.io/crates/vpx"}
+      ],
+      "acceptance_criteria": [
+        "Decode VP9 Profile 0, 1, 2",
+        "Support 4K resolution",
+        "Handle frame superframes"
+      ]
+    },
+    {
+      "id": "FEAT-011",
+      "name": "AV1 decoder",
+      "description": "Decode AV1 video codec with profile/level support",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": "media-video-decoder",
+      "difficulty": "expert",
+      "estimated_loc": "5000-8000",
+      "recommended_libraries": [
+        {"name": "dav1d", "version": "0.10", "purpose": "Fast AV1 decoder", "registry_url": "https://crates.io/crates/dav1d"},
+        {"name": "rav1e", "version": "0.7", "purpose": "Pure Rust AV1", "registry_url": "https://crates.io/crates/rav1e"}
+      ],
+      "acceptance_criteria": [
+        "Decode AV1 Main, High, Professional profiles",
+        "Support Film Grain synthesis",
+        "Hardware acceleration when available"
+      ]
+    },
+    {
+      "id": "FEAT-012",
+      "name": "Theora decoder",
+      "description": "Decode Theora video codec for Ogg containers",
+      "phase": "Phase 1",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "2000-3000"
+    },
+    {
+      "id": "FEAT-013",
+      "name": "AAC decoder",
+      "description": "Decode AAC audio with profile, sample rate, and channel support",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": "media-audio-decoder",
+      "template_name": "Audio Codec Decoder",
+      "difficulty": "hard",
+      "estimated_loc": "6000-10000",
+      "recommended_libraries": [
+        {"name": "fdk-aac", "version": "0.6", "purpose": "AAC codec", "registry_url": "https://crates.io/crates/fdk-aac"},
+        {"name": "symphonia", "version": "0.5", "purpose": "Pure Rust audio", "registry_url": "https://crates.io/crates/symphonia"}
+      ],
+      "acceptance_criteria": [
+        "Decode AAC-LC, HE-AAC, HE-AACv2 profiles",
+        "Support 8kHz to 96kHz sample rates",
+        "Support mono, stereo, 5.1 surround"
+      ],
+      "test_strategy": {
+        "unit_tests": ["Decoder initialization", "Packet decoding", "Sample format conversion"],
+        "integration_tests": ["Full audio file decoding", "Multi-codec support"]
+      }
+    },
+    {
+      "id": "FEAT-014",
+      "name": "MP3 decoder",
+      "description": "Decode MP3 audio with layer and bitrate support",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": "media-audio-decoder",
+      "difficulty": "medium",
+      "estimated_loc": "2000-3000",
+      "recommended_libraries": [
+        {"name": "minimp3", "version": "0.5", "purpose": "MP3 decoder", "registry_url": "https://crates.io/crates/minimp3"},
+        {"name": "symphonia", "version": "0.5", "purpose": "Pure Rust MP3", "registry_url": "https://crates.io/crates/symphonia"}
+      ],
+      "acceptance_criteria": [
+        "Decode MPEG Layer III",
+        "Support CBR and VBR",
+        "Support ID3 tags"
+      ]
+    },
+    {
+      "id": "FEAT-015",
+      "name": "Opus decoder",
+      "description": "Decode Opus audio with sample rate, channels, and application mode support",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": "media-audio-decoder",
+      "difficulty": "hard",
+      "estimated_loc": "3000-4000",
+      "recommended_libraries": [
+        {"name": "opus", "version": "0.3", "purpose": "Opus codec", "registry_url": "https://crates.io/crates/opus"}
+      ],
+      "acceptance_criteria": [
+        "Decode Opus at 8-48kHz sample rates",
+        "Support mono and stereo",
+        "Support VOIP, Audio, and LowDelay applications"
+      ]
+    },
+    {
+      "id": "FEAT-016",
+      "name": "Vorbis decoder",
+      "description": "Decode Vorbis audio codec",
+      "phase": "Phase 1",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": "media-audio-decoder",
+      "difficulty": "medium",
+      "estimated_loc": "2000-3000",
+      "recommended_libraries": [
+        {"name": "lewton", "version": "0.10", "purpose": "Vorbis decoder", "registry_url": "https://crates.io/crates/lewton"}
+      ]
+    },
+    {
+      "id": "FEAT-017",
+      "name": "FLAC decoder",
+      "description": "Decode FLAC lossless audio codec",
+      "phase": "Phase 1",
+      "priority": "medium",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": "media-audio-decoder",
+      "difficulty": "medium",
+      "estimated_loc": "1500-2500",
+      "recommended_libraries": [
+        {"name": "symphonia", "version": "0.5", "purpose": "FLAC decoding", "registry_url": "https://crates.io/crates/symphonia"}
+      ]
+    },
+    {
+      "id": "FEAT-018",
+      "name": "PCM audio handling",
+      "description": "Handle raw PCM audio with various formats, sample rates, and channel configurations",
+      "phase": "Phase 1",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "easy",
+      "estimated_loc": "500-800"
+    },
+    {
+      "id": "FEAT-019",
+      "name": "MediaEngine trait implementation",
+      "description": "Implement the core MediaEngine trait with all session management and playback control methods",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "3000-5000",
+      "acceptance_criteria": [
+        "create_session creates isolated media sessions",
+        "load_source handles all MediaSource variants",
+        "play/pause/seek work correctly",
+        "Volume and mute controls functional",
+        "Duration and current time tracking accurate"
+      ]
+    },
+    {
+      "id": "FEAT-020",
+      "name": "Media session management",
+      "description": "Implement session state machine with Idle, Loading, Ready, Playing, Paused, Seeking, Ended, Error states",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "2000-3000",
+      "acceptance_criteria": [
+        "State transitions are valid and enforced",
+        "Concurrent sessions isolated",
+        "Session cleanup releases all resources"
+      ]
+    },
+    {
+      "id": "FEAT-021",
+      "name": "URL media source support",
+      "description": "Load and play media from HTTP/HTTPS URLs",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "template_id": "networking-http-client",
+      "difficulty": "medium",
+      "estimated_loc": "1500-2500",
+      "recommended_libraries": [
+        {"name": "hyper", "version": "1.0", "purpose": "HTTP client", "registry_url": "https://crates.io/crates/hyper"},
+        {"name": "tokio", "version": "1.35", "purpose": "Async runtime", "registry_url": "https://crates.io/crates/tokio"}
+      ]
+    },
+    {
+      "id": "FEAT-022",
+      "name": "Buffer media source support",
+      "description": "Play media from raw byte buffers with MIME type detection",
+      "phase": "Phase 1",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "800-1200"
+    },
+    {
+      "id": "FEAT-023",
+      "name": "Stream media source support",
+      "description": "Handle streaming media sources with chunk-based delivery via mpsc channels",
+      "phase": "Phase 1",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "1500-2500"
+    },
+    {
+      "id": "FEAT-024",
+      "name": "Media Source Extensions (MSE) support",
+      "description": "Implement MSE API for JavaScript-driven adaptive streaming",
+      "phase": "Phase 2",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "expert",
+      "estimated_loc": "5000-8000",
+      "acceptance_criteria": [
+        "SourceBuffer API implemented",
+        "appendBuffer handles media segments",
+        "remove() clears buffered ranges",
+        "duration property correctly maintained"
+      ]
+    },
+    {
+      "id": "FEAT-025",
+      "name": "WebRTC media source support",
+      "description": "Handle WebRTC media streams from peer connections",
+      "phase": "Milestone 5",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "expert",
+      "estimated_loc": "4000-6000",
+      "recommended_libraries": [
+        {"name": "webrtc", "version": "0.9", "purpose": "WebRTC support", "registry_url": "https://crates.io/crates/webrtc"}
+      ]
+    },
+    {
+      "id": "FEAT-026",
+      "name": "Device capture source support",
+      "description": "Capture media from screen, camera, and microphone devices",
+      "phase": "Milestone 5",
+      "priority": "medium",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "3000-5000"
+    },
+    {
+      "id": "FEAT-027",
+      "name": "VideoFrame representation",
+      "description": "Implement VideoFrame struct with width, height, format, data, timestamp, duration, metadata",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "500-800"
+    },
+    {
+      "id": "FEAT-028",
+      "name": "AudioBuffer representation",
+      "description": "Implement AudioBuffer struct with format, sample_rate, channels, samples, timestamp, duration",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "500-800"
+    },
+    {
+      "id": "FEAT-029",
+      "name": "Pipeline orchestration module",
+      "description": "Coordinate media pipeline components: source → demuxer → decoder → sync → output",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "2000-3000"
+    },
+    {
+      "id": "FEAT-030",
+      "name": "Source reader module",
+      "description": "Abstract source reading for files, URLs, streams, and buffers",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "1500-2500"
+    },
+    {
+      "id": "FEAT-031",
+      "name": "Demuxer abstraction layer",
+      "description": "Common demuxer interface for all container formats",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "1000-1500"
+    },
+    {
+      "id": "FEAT-032",
+      "name": "Decoder abstraction layer",
+      "description": "Common decoder interface for all video and audio codecs",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "1000-1500"
+    },
+    {
+      "id": "FEAT-033",
+      "name": "A/V synchronization controller",
+      "description": "Synchronize audio and video streams within ±40ms tolerance",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "2000-3000",
+      "acceptance_criteria": [
+        "Audio/video sync within ±40ms",
+        "Handle frame drops gracefully",
+        "Support variable frame rates",
+        "Handle discontinuities (seeks, stream switches)"
+      ]
+    },
+    {
+      "id": "FEAT-034",
+      "name": "Buffer manager",
+      "description": "Manage memory buffers for frames, samples, and packets with configurable limits",
+      "phase": "Phase 1",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "1500-2500",
+      "acceptance_criteria": [
+        "Memory usage <500MB for 4K playback",
+        "Buffer pools reduce allocations",
+        "Graceful handling of memory pressure"
+      ]
+    },
+    {
+      "id": "FEAT-035",
+      "name": "Ring buffer for streaming",
+      "description": "Implement efficient ring buffer for streaming media data",
+      "phase": "Phase 1",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "800-1200"
+    },
+    {
+      "id": "FEAT-036",
+      "name": "Frame cache module",
+      "description": "Cache decoded frames for seeking and buffer management",
+      "phase": "Phase 1",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "1000-1500"
+    },
+    {
+      "id": "FEAT-037",
+      "name": "GStreamer integration (Phase 1)",
+      "description": "Implement media playback using GStreamer with gstreamer-rs bindings",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "3000-5000",
+      "recommended_libraries": [
+        {"name": "gstreamer", "version": "0.22", "purpose": "GStreamer bindings", "registry_url": "https://crates.io/crates/gstreamer"},
+        {"name": "gstreamer-app", "version": "0.22", "purpose": "AppSink/AppSrc", "registry_url": "https://crates.io/crates/gstreamer-app"},
+        {"name": "gstreamer-video", "version": "0.22", "purpose": "Video utilities", "registry_url": "https://crates.io/crates/gstreamer-video"},
+        {"name": "gstreamer-audio", "version": "0.22", "purpose": "Audio utilities", "registry_url": "https://crates.io/crates/gstreamer-audio"}
+      ],
+      "acceptance_criteria": [
+        "Initialize GStreamer pipeline",
+        "Create playbin with uridecodebin",
+        "Extract frames via AppSink",
+        "Handle state changes and errors"
+      ]
+    },
+    {
+      "id": "FEAT-038",
+      "name": "Progressive download support",
+      "description": "Support progressive download for HTTP media files",
+      "phase": "Milestone 2",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "1500-2500"
+    },
+    {
+      "id": "FEAT-039",
+      "name": "HLS manifest parsing",
+      "description": "Parse HLS (m3u8) manifests for adaptive streaming",
+      "phase": "Milestone 2",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "2000-3000",
+      "acceptance_criteria": [
+        "Parse master and media playlists",
+        "Extract variant stream info",
+        "Handle live and VOD streams",
+        "Support EXT-X-KEY for encryption"
+      ]
+    },
+    {
+      "id": "FEAT-040",
+      "name": "DASH manifest parsing",
+      "description": "Parse DASH (MPD) manifests for adaptive streaming",
+      "phase": "Milestone 2",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "2500-4000",
+      "acceptance_criteria": [
+        "Parse MPD XML structure",
+        "Extract AdaptationSets and Representations",
+        "Handle SegmentTemplate and SegmentList",
+        "Support live and on-demand profiles"
+      ]
+    },
+    {
+      "id": "FEAT-041",
+      "name": "Adaptive bitrate switching",
+      "description": "Implement ABR algorithm for quality adaptation based on bandwidth",
+      "phase": "Milestone 2",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "2000-3000",
+      "acceptance_criteria": [
+        "Measure available bandwidth",
+        "Switch quality without buffering",
+        "Buffer maintains 10-30 seconds",
+        "Smooth quality transitions"
+      ]
+    },
+    {
+      "id": "FEAT-042",
+      "name": "VA-API hardware acceleration (Linux)",
+      "description": "Implement hardware-accelerated video decoding using VA-API on Linux",
+      "phase": "Milestone 4",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "expert",
+      "estimated_loc": "3000-5000",
+      "recommended_libraries": [
+        {"name": "va-rs", "version": "0.1", "purpose": "VA-API bindings", "registry_url": "https://crates.io/crates/va-rs"}
+      ],
+      "acceptance_criteria": [
+        "4K@60fps with <10% CPU",
+        "Support H.264, H.265, VP9, AV1",
+        "Automatic fallback to software"
+      ]
+    },
+    {
+      "id": "FEAT-043",
+      "name": "DXVA hardware acceleration (Windows)",
+      "description": "Implement hardware-accelerated video decoding using DXVA2/D3D11VA on Windows",
+      "phase": "Milestone 4",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "expert",
+      "estimated_loc": "3000-5000",
+      "acceptance_criteria": [
+        "4K@60fps with <10% CPU",
+        "Support DXVA2 and D3D11VA",
+        "Automatic fallback to software"
+      ]
+    },
+    {
+      "id": "FEAT-044",
+      "name": "VideoToolbox hardware acceleration (macOS)",
+      "description": "Implement hardware-accelerated video decoding using VideoToolbox on macOS",
+      "phase": "Milestone 4",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "expert",
+      "estimated_loc": "3000-5000",
+      "acceptance_criteria": [
+        "4K@60fps with <10% CPU",
+        "Support H.264, H.265, VP9",
+        "Automatic fallback to software"
+      ]
+    },
+    {
+      "id": "FEAT-045",
+      "name": "Software decode fallback mechanism",
+      "description": "Automatic fallback from hardware to software decoding when hardware unavailable",
+      "phase": "Milestone 4",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "1000-1500"
+    },
+    {
+      "id": "FEAT-046",
+      "name": "WebRTC encode/decode pipeline",
+      "description": "Implement real-time video encoding/decoding for WebRTC",
+      "phase": "Milestone 5",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "expert",
+      "estimated_loc": "5000-8000",
+      "recommended_libraries": [
+        {"name": "webrtc", "version": "0.9", "purpose": "WebRTC stack", "registry_url": "https://crates.io/crates/webrtc"}
+      ],
+      "acceptance_criteria": [
+        "Encode VP8, VP9, H.264 for WebRTC",
+        "Decode incoming WebRTC streams",
+        "Latency < 150ms",
+        "Support simulcast"
+      ]
+    },
+    {
+      "id": "FEAT-047",
+      "name": "RTP/RTCP handling",
+      "description": "Implement RTP packetization and RTCP feedback for WebRTC",
+      "phase": "Milestone 5",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "3000-4000",
+      "acceptance_criteria": [
+        "RTP packet assembly/disassembly",
+        "RTCP feedback (PLI, FIR, REMB)",
+        "Handle packet loss and reordering"
+      ]
+    },
+    {
+      "id": "FEAT-048",
+      "name": "Jitter buffer implementation",
+      "description": "Implement adaptive jitter buffer for smooth WebRTC playback",
+      "phase": "Milestone 5",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "2000-3000"
+    },
+    {
+      "id": "FEAT-049",
+      "name": "Echo cancellation",
+      "description": "Implement acoustic echo cancellation for WebRTC audio",
+      "phase": "Milestone 5",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "expert",
+      "estimated_loc": "3000-5000"
+    },
+    {
+      "id": "FEAT-050",
+      "name": "EME API implementation",
+      "description": "Implement Encrypted Media Extensions API for DRM playback",
+      "phase": "Milestone 6",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "expert",
+      "estimated_loc": "4000-6000",
+      "acceptance_criteria": [
+        "MediaKeySession management",
+        "License request/response handling",
+        "Key status events",
+        "Support Widevine key system"
+      ]
+    },
+    {
+      "id": "FEAT-051",
+      "name": "CDM interface implementation",
+      "description": "Implement Content Decryption Module interface for DRM",
+      "phase": "Milestone 6",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "expert",
+      "estimated_loc": "3000-5000",
+      "recommended_libraries": [
+        {"name": "widevine", "version": "0.1", "purpose": "Widevine CDM", "registry_url": "https://crates.io/crates/widevine"}
+      ]
+    },
+    {
+      "id": "FEAT-052",
+      "name": "License acquisition",
+      "description": "Implement DRM license acquisition and renewal",
+      "phase": "Milestone 6",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "2000-3000"
+    },
+    {
+      "id": "FEAT-053",
+      "name": "Secure video path",
+      "description": "Implement secure video path to prevent clear frame exposure in DRM playback",
+      "phase": "Milestone 6",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "expert",
+      "estimated_loc": "3000-5000",
+      "acceptance_criteria": [
+        "Decrypt in secure memory",
+        "No clear frames in system memory",
+        "Passes DRM compliance tests"
+      ]
+    },
+    {
+      "id": "FEAT-054",
+      "name": "Screen capture API",
+      "description": "Implement screen capture for media recording and WebRTC",
+      "phase": "Milestone 5",
+      "priority": "medium",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "2000-3000"
+    },
+    {
+      "id": "FEAT-055",
+      "name": "Camera capture API",
+      "description": "Implement camera capture for WebRTC and media recording",
+      "phase": "Milestone 5",
+      "priority": "medium",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "2000-3000"
+    },
+    {
+      "id": "FEAT-056",
+      "name": "Microphone capture API",
+      "description": "Implement microphone capture for WebRTC and audio recording",
+      "phase": "Milestone 5",
+      "priority": "medium",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "1500-2500"
+    },
+    {
+      "id": "FEAT-057",
+      "name": "Control thread implementation",
+      "description": "Implement main control thread for handling API calls",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "1500-2500"
+    },
+    {
+      "id": "FEAT-058",
+      "name": "Demuxer thread implementation",
+      "description": "Implement dedicated thread for container parsing",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "1500-2500"
+    },
+    {
+      "id": "FEAT-059",
+      "name": "Video decode thread pool",
+      "description": "Implement thread pool for parallel video frame decoding",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "2000-3000",
+      "acceptance_criteria": [
+        "Configurable thread count (default 4)",
+        "Work stealing for load balancing",
+        "Frame ordering preserved"
+      ]
+    },
+    {
+      "id": "FEAT-060",
+      "name": "Audio decode thread",
+      "description": "Implement dedicated thread for audio decoding",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "1000-1500"
+    },
+    {
+      "id": "FEAT-061",
+      "name": "Network I/O thread",
+      "description": "Implement dedicated thread for network streaming I/O",
+      "phase": "Milestone 2",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "1500-2500"
+    },
+    {
+      "id": "FEAT-062",
+      "name": "Hardware decode thread",
+      "description": "Implement dedicated thread for hardware-accelerated decoding",
+      "phase": "Milestone 4",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "1500-2500"
+    },
+    {
+      "id": "FEAT-063",
+      "name": "Thread communication channels",
+      "description": "Implement mpsc channels for inter-thread communication",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "1000-1500",
+      "recommended_libraries": [
+        {"name": "crossbeam-channel", "version": "0.5", "purpose": "MPMC channels", "registry_url": "https://crates.io/crates/crossbeam-channel"},
+        {"name": "tokio", "version": "1.35", "purpose": "Async channels", "registry_url": "https://crates.io/crates/tokio"}
+      ]
+    },
+    {
+      "id": "FEAT-064",
+      "name": "CreateMediaElement message handler",
+      "description": "Handle CreateMediaElement messages from Browser Shell",
+      "phase": "Phase 1",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "500-800"
+    },
+    {
+      "id": "FEAT-065",
+      "name": "StreamData message handler",
+      "description": "Handle StreamData messages from Network Stack",
+      "phase": "Phase 1",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "500-800"
+    },
+    {
+      "id": "FEAT-066",
+      "name": "PlaybackCommand message handler",
+      "description": "Handle PlaybackCommand messages from DOM/JavaScript",
+      "phase": "Phase 1",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "500-800"
+    },
+    {
+      "id": "FEAT-067",
+      "name": "AddRemoteStream message handler",
+      "description": "Handle AddRemoteStream messages from WebRTC",
+      "phase": "Milestone 5",
+      "priority": "medium",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "500-800"
+    },
+    {
+      "id": "FEAT-068",
+      "name": "VideoFrameReady event emitter",
+      "description": "Emit VideoFrameReady events to Render Engine",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "easy",
+      "estimated_loc": "300-500"
+    },
+    {
+      "id": "FEAT-069",
+      "name": "AudioSamplesReady event emitter",
+      "description": "Emit AudioSamplesReady events to Audio subsystem",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "easy",
+      "estimated_loc": "300-500"
+    },
+    {
+      "id": "FEAT-070",
+      "name": "PlaybackStateChanged event emitter",
+      "description": "Emit PlaybackStateChanged events to DOM/JavaScript",
+      "phase": "Phase 1",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "easy",
+      "estimated_loc": "300-500"
+    },
+    {
+      "id": "FEAT-071",
+      "name": "MediaError event emitter",
+      "description": "Emit MediaError events for error reporting",
+      "phase": "Phase 1",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "easy",
+      "estimated_loc": "300-500"
+    },
+    {
+      "id": "FEAT-072",
+      "name": "BufferingProgress event emitter",
+      "description": "Emit BufferingProgress events for loading feedback",
+      "phase": "Phase 1",
+      "priority": "medium",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "easy",
+      "estimated_loc": "300-500"
+    },
+    {
+      "id": "FEAT-073",
+      "name": "Input validation for media sources",
+      "description": "Validate URL schemes, MIME types, and container headers",
+      "phase": "Phase 1",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "800-1200",
+      "acceptance_criteria": [
+        "Validate URL schemes (http, https, file, blob)",
+        "Check file permissions for local files",
+        "Validate MIME types against allowed list",
+        "Detect malformed container headers"
+      ]
+    },
+    {
+      "id": "FEAT-074",
+      "name": "Memory safety in parsing",
+      "description": "Implement bounds checking and recursion limits in container parsers",
+      "phase": "Phase 1",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "500-800",
+      "acceptance_criteria": [
+        "Bounds checking on all buffer accesses",
+        "Recursion depth limits (max 10)",
+        "Size validation for nested structures"
+      ]
+    },
+    {
+      "id": "FEAT-075",
+      "name": "Sandbox integration for decoders",
+      "description": "Run decoders in sandboxed subprocess for security isolation",
+      "phase": "Phase 3",
+      "priority": "medium",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "expert",
+      "estimated_loc": "3000-5000"
+    },
+    {
+      "id": "FEAT-076",
+      "name": "Performance metrics collection",
+      "description": "Collect decode time, frame drops, buffer health, and quality metrics",
+      "phase": "Phase 1",
+      "priority": "medium",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "1000-1500",
+      "recommended_libraries": [
+        {"name": "metrics", "version": "0.21", "purpose": "Performance metrics", "registry_url": "https://crates.io/crates/metrics"}
+      ]
+    },
+    {
+      "id": "FEAT-077",
+      "name": "Prometheus metrics export",
+      "description": "Export media engine metrics in Prometheus format",
+      "phase": "Phase 2",
+      "priority": "low",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "easy",
+      "estimated_loc": "500-800"
+    },
+    {
+      "id": "FEAT-078",
+      "name": "Timestamp utilities",
+      "description": "Implement timestamp conversion, discontinuity handling, and PTS/DTS management",
+      "phase": "Phase 1",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "800-1200"
+    },
+    {
+      "id": "FEAT-079",
+      "name": "MediaError type definitions",
+      "description": "Define comprehensive error types: UnsupportedFormat, Codec, Network, DRM, Hardware, Memory, State",
+      "phase": "Phase 1",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "easy",
+      "estimated_loc": "300-500",
+      "recommended_libraries": [
+        {"name": "thiserror", "version": "1.0", "purpose": "Error derive", "registry_url": "https://crates.io/crates/thiserror"}
+      ]
+    },
+    {
+      "id": "FEAT-080",
+      "name": "Error recovery strategies",
+      "description": "Implement automatic recovery: software fallback, retry with backoff, cache clearing",
+      "phase": "Phase 1",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "800-1200"
+    },
+    {
+      "id": "FEAT-081",
+      "name": "4K@60fps hardware decode playback",
+      "description": "Achieve 4K@60fps playback with <5% CPU using hardware acceleration",
+      "phase": "Milestone 4",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "expert",
+      "estimated_loc": "2000-3000",
+      "acceptance_criteria": [
+        "4K@60fps with <5% CPU on hardware decode",
+        "<30% GPU utilization",
+        "Memory usage <600MB"
+      ]
+    },
+    {
+      "id": "FEAT-082",
+      "name": "1080p@30fps software decode playback",
+      "description": "Achieve 1080p@30fps software decode with <30% CPU single core",
+      "phase": "Phase 1",
+      "priority": "critical",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "1500-2500",
+      "acceptance_criteria": [
+        "1080p@30fps with <30% CPU single core",
+        "Memory usage <300MB",
+        "No dropped frames under normal conditions"
+      ]
+    },
+    {
+      "id": "FEAT-083",
+      "name": "Seek latency optimization",
+      "description": "Achieve seek latency <100ms for local content, <1000ms for network",
+      "phase": "Phase 1",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "1500-2500",
+      "acceptance_criteria": [
+        "Local seek <100ms",
+        "Network seek <1000ms",
+        "No audio glitches on seek"
+      ]
+    },
+    {
+      "id": "FEAT-084",
+      "name": "Startup time optimization",
+      "description": "Achieve first frame display in <500ms",
+      "phase": "Phase 1",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "1000-1500",
+      "acceptance_criteria": [
+        "First frame <500ms from load",
+        "Format detection <200ms",
+        "Hardware init <500ms"
+      ]
+    },
+    {
+      "id": "FEAT-085",
+      "name": "Pure Rust H.264 decoder (Phase 3)",
+      "description": "Replace GStreamer H.264 with pure Rust implementation",
+      "phase": "Milestone 7",
+      "priority": "medium",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "expert",
+      "estimated_loc": "15000-25000",
+      "acceptance_criteria": [
+        "Performance within 2x of GStreamer",
+        "Passes 90% of H.264 test vectors",
+        "No visible quality degradation"
+      ]
+    },
+    {
+      "id": "FEAT-086",
+      "name": "Remove GStreamer dependency (Phase 3)",
+      "description": "Complete migration to pure Rust media engine, removing GStreamer",
+      "phase": "Milestone 7",
+      "priority": "low",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "expert",
+      "estimated_loc": "5000-10000",
+      "acceptance_criteria": [
+        "All major codecs in Rust",
+        "All containers in Rust",
+        "Performance within 1.5x of Chrome",
+        "Memory usage < Chrome"
+      ]
+    },
+    {
+      "id": "FEAT-087",
+      "name": "WPT media tests integration",
+      "description": "Integrate Web Platform Tests for media APIs",
+      "phase": "Phase 2",
+      "priority": "medium",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "hard",
+      "estimated_loc": "2000-3000",
+      "acceptance_criteria": [
+        "50% WPT media tests passing (Phase 2)",
+        "90% WPT media tests passing (Milestone 7)"
+      ]
+    },
+    {
+      "id": "FEAT-088",
+      "name": "Integration tests for playback",
+      "description": "Comprehensive integration tests for video/audio playback",
+      "phase": "Phase 1",
+      "priority": "high",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "2000-3000",
+      "acceptance_criteria": [
+        "Test all supported containers",
+        "Test all supported codecs",
+        "Test seek, rate control, volume"
+      ]
+    },
+    {
+      "id": "FEAT-089",
+      "name": "Performance benchmarks",
+      "description": "Implement decode throughput, latency, and memory benchmarks",
+      "phase": "Phase 1",
+      "priority": "medium",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "1500-2500",
+      "recommended_libraries": [
+        {"name": "criterion", "version": "0.5", "purpose": "Benchmarking", "registry_url": "https://crates.io/crates/criterion"}
+      ]
+    },
+    {
+      "id": "FEAT-090",
+      "name": "Test asset management",
+      "description": "Manage test media files for unit and integration tests",
+      "phase": "Phase 1",
+      "priority": "medium",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "easy",
+      "estimated_loc": "500-800"
+    },
+    {
+      "id": "FEAT-091",
+      "name": "Tracing and logging infrastructure",
+      "description": "Implement structured logging and tracing for debugging",
+      "phase": "Phase 1",
+      "priority": "medium",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "easy",
+      "estimated_loc": "500-800",
+      "recommended_libraries": [
+        {"name": "tracing", "version": "0.1", "purpose": "Logging/tracing", "registry_url": "https://crates.io/crates/tracing"}
+      ]
+    },
+    {
+      "id": "FEAT-092",
+      "name": "Platform-specific build scripts",
+      "description": "Implement build.rs for platform-specific linking (VA-API, DXVA, VideoToolbox)",
+      "phase": "Phase 1",
+      "priority": "medium",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "medium",
+      "estimated_loc": "300-500"
+    },
+    {
+      "id": "FEAT-093",
+      "name": "Cargo feature flags",
+      "description": "Implement feature flags for optional codec/backend selection",
+      "phase": "Phase 1",
+      "priority": "medium",
+      "status": "pending",
+      "extraction_method": "llm",
+      "detected_language": "Rust",
+      "difficulty": "easy",
+      "estimated_loc": "200-300"
+    }
+  ],
   "completed_order": [],
-  "last_updated": "2025-11-24T07:11:35.643075",
+  "last_updated": "2025-11-24T07:30:00.000000",
   "initialized": true,
   "spec_file": "specifications/media-engine-specification.md",
   "spec_files": [
     "specifications/media-engine-specification.md"
   ],
-  "total_features": 0
+  "total_features": 93,
+  "detected_language": "Rust",
+  "extraction_summary": {
+    "containers": 6,
+    "video_codecs": 6,
+    "audio_codecs": 6,
+    "core_engine": 14,
+    "pipeline": 8,
+    "streaming": 4,
+    "hardware_acceleration": 5,
+    "webrtc": 5,
+    "drm": 4,
+    "capture": 3,
+    "threading": 7,
+    "message_bus": 9,
+    "security": 3,
+    "metrics": 2,
+    "testing": 4,
+    "infrastructure": 3,
+    "performance": 4
+  }
 }
