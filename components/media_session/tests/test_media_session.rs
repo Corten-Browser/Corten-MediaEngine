@@ -16,7 +16,7 @@ fn test_media_session_new() {
 #[test]
 fn test_media_session_set_state() {
     let id = SessionId::new();
-    let mut session = MediaSession::new(id);
+    let session = MediaSession::new(id);
 
     let new_state = SessionState::Loading {
         source: cortenbrowser_shared_types::MediaSource::Url {
@@ -41,14 +41,14 @@ fn test_media_session_get_state() {
 #[test]
 fn test_media_session_updated_at_changes() {
     let id = SessionId::new();
-    let mut session = MediaSession::new(id);
-    let initial_time = session.updated_at;
+    let session = MediaSession::new(id);
+    let initial_time = session.get_updated_at();
 
     // Small delay to ensure time difference
     std::thread::sleep(Duration::from_millis(10));
 
     session.set_state(SessionState::Idle);
-    assert!(session.updated_at > initial_time);
+    assert!(session.get_updated_at() > initial_time);
 }
 
 #[test]

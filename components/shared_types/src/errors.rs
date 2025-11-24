@@ -86,6 +86,26 @@ pub enum MediaError {
         /// The attempted target state
         to: SessionState,
     },
+
+    /// Session not found
+    #[error("Session not found: {0}")]
+    SessionNotFound(crate::session::SessionId),
+
+    /// Invalid parameter provided
+    #[error("Invalid parameter: {0}")]
+    InvalidParameter(String),
+
+    /// Feature not implemented
+    #[error("Not implemented: {0}")]
+    NotImplemented(String),
+
+    /// Invalid state for operation
+    #[error("Invalid state: {0}")]
+    InvalidState(String),
+
+    /// Resource exhausted (e.g., max sessions reached)
+    #[error("Resource exhausted: {0}")]
+    ResourceExhausted(String),
 }
 
 /// Result type for media operations

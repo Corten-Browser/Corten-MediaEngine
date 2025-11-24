@@ -1,16 +1,16 @@
 ///! Media Engine implementation - coordinates all media components
 use crate::types::{MediaEngineConfig, MediaEngineEvent, MediaEngineMessage};
 use cortenbrowser_media_pipeline::MediaPipeline;
-use cortenbrowser_media_session::{MediaSession, SessionManager};
+use cortenbrowser_media_session::{MediaSession, SessionManager, SessionState};
 use cortenbrowser_shared_types::{
-    MediaEngine, MediaError, MediaSessionConfig, MediaSource, SessionId,
+    AudioBuffer, MediaEngine, MediaError, MediaSessionConfig, MediaSource, SessionId, VideoFrame,
 };
 use parking_lot::RwLock;
 use std::collections::HashMap;
 use std::sync::Arc;
 use std::time::Duration;
 use tokio::sync::mpsc;
-use tracing::{debug, error, info, warn};
+use tracing::{debug, error, info};
 
 /// Media Engine implementation
 ///
@@ -138,12 +138,12 @@ impl MediaEngine for MediaEngineImpl {
         }
 
         // Create session through session manager
-        let session_id = self.session_manager.create_session(config).await?;
+        let session_id = self.session_manager.create(config)?;
 
         // Get the session
         let session = self
             .session_manager
-            .get_session(session_id)
+            .get(session_id)
             .ok_or_else(|| MediaError::SessionNotFound(session_id))?;
 
         // Store session context (without pipeline initially)
@@ -191,7 +191,7 @@ impl MediaEngine for MediaEngineImpl {
         context.session.set_state(SessionState::Playing {
             position: Duration::from_secs(0),
             rate: 1.0,
-        })?;
+        });
 
         // Start pipeline
         if let Some(pipeline) = &context.pipeline {
@@ -225,7 +225,7 @@ impl MediaEngine for MediaEngineImpl {
         // Transition session state
         context
             .session
-            .set_state(SessionState::Paused { position })?;
+            .set_state(SessionState::Paused { position });
 
         // Pause pipeline
         if let Some(pipeline) = &context.pipeline {
@@ -256,7 +256,7 @@ impl MediaEngine for MediaEngineImpl {
         // Transition to seeking state
         context
             .session
-            .set_state(SessionState::Seeking { target: position })?;
+            .set_state(SessionState::Seeking { target: position });
 
         // Seek in pipeline
         if let Some(pipeline) = &context.pipeline {
@@ -271,7 +271,7 @@ impl MediaEngine for MediaEngineImpl {
         context.session.set_state(SessionState::Playing {
             position,
             rate: 1.0,
-        })?;
+        });
 
         // Emit state changed event
         self.emit_event(MediaEngineEvent::PlaybackStateChanged {
@@ -380,7 +380,7 @@ impl MediaEngine for MediaEngineImpl {
         }
 
         // Destroy session through manager
-        self.session_manager.destroy_session(session).await?;
+        self.session_manager.destroy(session)?;
 
         info!("Destroyed session: {:?}", session);
         Ok(())

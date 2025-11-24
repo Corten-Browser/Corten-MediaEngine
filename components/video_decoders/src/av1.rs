@@ -5,7 +5,7 @@
 use cortenbrowser_shared_types::{
     FrameMetadata, MediaError, PixelFormat, VideoDecoder, VideoFrame, VideoPacket,
 };
-use dav1d::{Decoder as Dav1dDecoder, PixelLayout};
+use dav1d::{Decoder as Dav1dDecoder, PixelLayout, PlanarImageComponent};
 use std::time::Duration;
 
 /// AV1 video decoder
@@ -68,22 +68,23 @@ impl AV1Decoder {
         let data = match picture.pixel_layout() {
             PixelLayout::I420 => {
                 // YUV420 format
-                let stride_y = picture.stride(0);
-                let stride_u = picture.stride(1);
-                let stride_v = picture.stride(2);
+                let stride_y = picture.stride(PlanarImageComponent::Y) as usize;
+                let stride_u = picture.stride(PlanarImageComponent::U) as usize;
+                let stride_v = picture.stride(PlanarImageComponent::V) as usize;
 
-                let plane_y = picture.plane(0);
-                let plane_u = picture.plane(1);
-                let plane_v = picture.plane(2);
+                let plane_y = picture.plane(PlanarImageComponent::Y);
+                let plane_u = picture.plane(PlanarImageComponent::U);
+                let plane_v = picture.plane(PlanarImageComponent::V);
 
-                let y_size = stride_y * height as usize;
-                let u_size = stride_u * (height as usize / 2);
-                let v_size = stride_v * (height as usize / 2);
+                let h = height as usize;
+                let y_size = stride_y * h;
+                let u_size = stride_u * (h / 2);
+                let v_size = stride_v * (h / 2);
 
                 let mut data = Vec::with_capacity(y_size + u_size + v_size);
-                data.extend_from_slice(plane_y);
-                data.extend_from_slice(plane_u);
-                data.extend_from_slice(plane_v);
+                data.extend_from_slice(plane_y.as_ref());
+                data.extend_from_slice(plane_u.as_ref());
+                data.extend_from_slice(plane_v.as_ref());
                 data
             }
             _ => {

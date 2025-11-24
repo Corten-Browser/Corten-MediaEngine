@@ -1,9 +1,10 @@
 ///! Types for media engine configuration and messages
 use cortenbrowser_buffer_manager::BufferConfig;
 use cortenbrowser_media_pipeline::PipelineConfig;
+use cortenbrowser_media_session::SessionState;
 use cortenbrowser_shared_types::{
     AudioBuffer, MediaChunk, MediaElementAttributes, MediaError, PlaybackCommand, SessionId,
-    SessionState, VideoFrame,
+    VideoFrame,
 };
 
 /// Configuration for the Media Engine

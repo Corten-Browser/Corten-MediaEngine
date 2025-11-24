@@ -279,3 +279,65 @@ pub enum MediaSource {
         constraints: MediaConstraints,
     },
 }
+
+/// Attributes for a media element (HTML5 video/audio element style)
+#[derive(Debug, Clone)]
+pub struct MediaElementAttributes {
+    /// Whether the media should autoplay
+    pub autoplay: bool,
+    /// Whether the media should loop
+    pub loop_playback: bool,
+    /// Whether the media should be muted
+    pub muted: bool,
+    /// Default playback rate
+    pub playback_rate: f32,
+    /// Poster image URL (for video)
+    pub poster: Option<String>,
+    /// Preload strategy
+    pub preload: PreloadStrategy,
+    /// Media source URL
+    pub src: Option<String>,
+}
+
+impl Default for MediaElementAttributes {
+    fn default() -> Self {
+        Self {
+            autoplay: false,
+            loop_playback: false,
+            muted: false,
+            playback_rate: 1.0,
+            poster: None,
+            preload: PreloadStrategy::Metadata,
+            src: None,
+        }
+    }
+}
+
+/// Preload strategy for media
+#[derive(Debug, Clone, Default)]
+pub enum PreloadStrategy {
+    /// No preloading
+    None,
+    /// Preload metadata only
+    #[default]
+    Metadata,
+    /// Preload the entire media
+    Auto,
+}
+
+/// Playback control commands
+#[derive(Debug, Clone)]
+pub enum PlaybackCommand {
+    /// Start playback
+    Play,
+    /// Pause playback
+    Pause,
+    /// Seek to position (in milliseconds)
+    Seek(u64),
+    /// Set playback rate
+    SetRate(f32),
+    /// Set volume (0.0 to 1.0)
+    SetVolume(f32),
+    /// Mute/unmute
+    SetMuted(bool),
+}
