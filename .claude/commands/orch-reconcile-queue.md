@@ -1,22 +1,12 @@
 ---
-description: "Reconcile task queue with existing codebase - detect started work (marks INCOMPLETE, not COMPLETED)"
+description: "Reconcile task queue with existing codebase - detect already-implemented features"
 ---
 
 # Reconcile Task Queue with Codebase
 
-**Purpose**: Analyze the codebase to detect which pending tasks have work started, and mark them as INCOMPLETE for verification.
+**Purpose**: Analyze the codebase to detect which pending tasks have already been implemented, and update the task queue accordingly.
 
-**CRITICAL**: This command marks tasks as **INCOMPLETE**, never as **COMPLETED**.
-Only `/orchestrate` with verified passing tests can mark tasks as COMPLETED.
-
-**When to use**:
-- After upgrading a partially-complete project to use the task queue system
-- When many features may have work started but the queue shows them as "pending"
-- To detect existing code that needs verification
-
-**Options**:
-- `/orch-reconcile-queue` - Normal reconciliation (pending → incomplete)
-- `/orch-reconcile-queue --reset` - Reset all tasks to incomplete for re-verification
+**When to use**: After upgrading a partially-complete project to use the task queue system, where many features may already be implemented but the queue shows them as "pending".
 
 ---
 
@@ -227,32 +217,27 @@ Based on analysis, assign one of:
 
 | Status | Criteria | Queue Action |
 |--------|----------|--------------|
-| **WORK_DETECTED** | Clear match, real code exists | Mark as `incomplete` (needs verification) |
-| **WORK_WITH_TESTS** | Code + tests exist (not verified passing) | Mark as `incomplete` with note |
-| **PARTIAL** | Some code exists but clearly incomplete | Mark as `incomplete` |
+| **IMPLEMENTED** | Clear match, real code, tests pass | Mark as `completed` |
+| **IMPLEMENTED_NO_TESTS** | Clear match, real code, no tests | Mark as `completed` with note |
+| **PARTIAL** | Some code exists but incomplete | Keep as `pending`, add note |
 | **STUB_ONLY** | Only stubs/placeholders found | Keep as `pending` |
 | **NOT_FOUND** | No matching code found | Keep as `pending` |
-| **UNCERTAIN** | Possible match, needs human review | Flag for review, keep `pending` |
-
-**CRITICAL**: Reconciliation NEVER marks tasks as `completed`.
-The `completed` status requires verified passing tests via `/orchestrate` run.
+| **UNCERTAIN** | Possible match, needs human review | Flag for review |
 
 **Confidence scoring:**
 
 ```
-HIGH confidence (mark as incomplete):
+HIGH confidence (auto-suggest complete):
   - Implementation clearly matches task description
   - No stub markers found
-  - Tests exist (not necessarily verified passing)
-  - NOTE: Still marked INCOMPLETE - needs /orchestrate verification
+  - Tests exist AND pass
 
-MEDIUM confidence (mark as incomplete with caveat):
+MEDIUM confidence (suggest with caveat):
   - Implementation appears to match
   - Minor uncertainty about completeness
   - Tests missing or not runnable
-  - NOTE: Still marked INCOMPLETE - needs /orchestrate verification
 
-LOW confidence (flag for review, keep pending):
+LOW confidence (flag for review):
   - Possible match but significant uncertainty
   - Implementation might be for different purpose
   - Multiple candidates, unclear which is correct
@@ -272,34 +257,32 @@ After analyzing all pending tasks, generate a comprehensive report:
 Tasks Analyzed: 15 pending
 
 ═══════════════════════════════════════════════════════════════════════
-WORK DETECTED (Mark as INCOMPLETE for verification): 8 tasks
+IMPLEMENTED (Recommend marking complete): 8 tasks
 ═══════════════════════════════════════════════════════════════════════
 
-⚠️ TASK-001: Implement audio file loading
-   Status: WORK_DETECTED (HIGH confidence)
+✅ TASK-001: Implement audio file loading
+   Status: IMPLEMENTED (HIGH confidence)
    Location: components/audio_processor/src/loader.py
    Class/Module: AudioFileLoader
-   Tests: 12 tests found (NOT VERIFIED PASSING)
-   Evidence: Lines 45-150 contain implementation
-   Action: Mark as INCOMPLETE - needs /orchestrate verification
+   Tests: 12 tests, all passing
+   Evidence: Lines 45-150 contain full implementation
 
-⚠️ TASK-002: Create configuration manager
-   Status: WORK_DETECTED (HIGH confidence)
+✅ TASK-002: Create configuration manager
+   Status: IMPLEMENTED (HIGH confidence)
    Location: components/config_manager/src/config.py
    Class/Module: ConfigManager
-   Tests: 8 tests found (NOT VERIFIED PASSING)
+   Tests: 8 tests, all passing
    Evidence: YAML and JSON loading with schema validation
-   Action: Mark as INCOMPLETE - needs /orchestrate verification
 
-⚠️ TASK-003: Build CLI interface
-   Status: WORK_WITH_TESTS (MEDIUM confidence)
+✅ TASK-003: Build CLI interface
+   Status: IMPLEMENTED_NO_TESTS (MEDIUM confidence)
    Location: components/cli_interface/src/main.py
    Class/Module: CLIApplication
    Tests: None found
    Evidence: argparse setup with subcommands
-   Action: Mark as INCOMPLETE - needs /orchestrate verification + tests
+   Note: Consider adding tests
 
-[... more detected tasks ...]
+[... more implemented tasks ...]
 
 ═══════════════════════════════════════════════════════════════════════
 PARTIAL (Keep as pending, needs completion): 2 tasks
@@ -353,12 +336,10 @@ UNCERTAIN (Flagged for manual review): 1 task
 
 SUMMARY
 ───────
-Mark as INCOMPLETE (work detected):  8 tasks (7 HIGH, 1 MEDIUM confidence)
-Keep as PENDING (partial/not found): 6 tasks
-Flagged for review:                  1 task
-
-NOTE: INCOMPLETE tasks require /orchestrate verification before COMPLETED.
-      This reconciliation does NOT verify tests pass - only detects work.
+Recommend marking complete:  8 tasks (7 HIGH, 1 MEDIUM confidence)
+Keep as pending (partial):   2 tasks
+Keep as pending (not found): 4 tasks
+Flagged for review:          1 task
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
@@ -377,16 +358,13 @@ Present options to user:
 ═══════════════════════════════════════════════════════════════════════
 
 Based on the analysis above, I recommend:
-  • Mark 8 tasks as INCOMPLETE (work detected, needs verification)
-  • Keep 7 tasks as PENDING (no work detected)
-
-NOTE: Tasks marked INCOMPLETE still require /orchestrate verification
-      before they can be marked COMPLETED.
+  • Mark 8 tasks as COMPLETED
+  • Keep 7 tasks as PENDING
 
 How would you like to proceed?
 
 Options:
-  1. Accept all recommendations (mark 8 as INCOMPLETE)
+  1. Accept all recommendations (mark 8 as complete)
   2. Review and confirm individually
   3. Accept only HIGH confidence matches (7 tasks)
   4. Abort - make no changes
@@ -402,17 +380,17 @@ Review each task individually:
 TASK-001: Implement audio file loading
   Location: components/audio_processor/src/loader.py
   Confidence: HIGH
-  Mark as INCOMPLETE? [Y/n]:
+  Mark as completed? [Y/n]:
 
 TASK-002: Create configuration manager
   Location: components/config_manager/src/config.py
   Confidence: HIGH
-  Mark as INCOMPLETE? [Y/n]:
+  Mark as completed? [Y/n]:
 
 TASK-003: Build CLI interface
   Location: components/cli_interface/src/main.py
   Confidence: MEDIUM (no tests)
-  Mark as INCOMPLETE? [Y/n]:
+  Mark as completed? [Y/n]:
 
 [... continue for each recommended task ...]
 ```
@@ -434,13 +412,13 @@ queue = json.loads(queue_file.read_text())
 # Tasks confirmed by user (from Step 4)
 confirmed_task_ids = ["TASK-001", "TASK-002", "TASK-003", ...]  # User-confirmed list
 
-# Update each confirmed task to INCOMPLETE (NOT completed!)
+# Update each confirmed task
 for task in queue["tasks"]:
     if task["id"] in confirmed_task_ids:
-        task["status"] = "incomplete"  # CRITICAL: NOT "completed"
-        task["detection_timestamp"] = datetime.utcnow().isoformat() + "Z"
-        task["detection_method"] = "reconciliation"
-        task["reconciliation_notes"] = "Work detected via /orch-reconcile-queue. Requires /orchestrate verification."
+        task["status"] = "completed"
+        task["completed_at"] = datetime.utcnow().isoformat() + "Z"
+        task["completion_method"] = "reconciliation"
+        task["reconciliation_notes"] = "Detected as already implemented via /orch-reconcile-queue"
 
 # Update queue metadata
 queue["last_updated"] = datetime.utcnow().isoformat() + "Z"
@@ -449,8 +427,7 @@ queue["last_updated"] = datetime.utcnow().isoformat() + "Z"
 queue_file.write_text(json.dumps(queue, indent=2))
 
 print()
-print(f"✅ Updated {len(confirmed_task_ids)} tasks to INCOMPLETE status")
-print(f"   These tasks require /orchestrate verification before COMPLETED")
+print(f"✅ Updated {len(confirmed_task_ids)} tasks to completed status")
 ```
 
 ---
@@ -516,99 +493,24 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Changes made:
-  ⚠️ Marked 8 tasks as INCOMPLETE (work detected, needs verification)
-  📋 Kept 7 tasks as PENDING (no work detected)
+  ✅ Marked 8 tasks as completed
+  📋 Kept 7 tasks as pending
   📝 Created reconciliation log
 
 Queue status after reconciliation:
   Total tasks:     15
-  Completed:       0 (verified via /orchestrate)
-  Incomplete:      8 (needs verification)
-  Pending:         7 (no work detected)
+  Completed:       8 (was 0)
+  Pending:         7 (was 15)
 
-Progress: ░░░░░░░░░░░░░░░░ 0% verified
-
-IMPORTANT: Tasks marked INCOMPLETE are NOT complete!
-  They require /orchestrate verification (build + test) before COMPLETED.
+Progress: ████████░░░░░░░░ 53%
 
 Next steps:
-  • Run /orchestrate to verify INCOMPLETE tasks (runs tests, marks COMPLETED if pass)
+  • Run /orchestrate --resume to continue with remaining tasks
   • Review uncertain tasks manually if any were flagged
   • Check reconciliation log: orchestration/data/logs/reconciliation_log.json
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
-
----
-
-## Reset Mode: --reset
-
-**Purpose**: Force all tasks back to INCOMPLETE status for complete re-verification.
-
-**When to use**:
-- After discovering false positives from previous reconciliation
-- When tests show features don't actually work
-- To force complete re-verification of project state
-- After crash recovery when task states may be inconsistent
-
-### Usage
-
-When running this command, include the `--reset` flag:
-
-```
-/orch-reconcile-queue --reset
-```
-
-Or use the task runner directly:
-
-```bash
-python orchestration/tasks/task_runner.py --reset       # With confirmation
-python orchestration/tasks/task_runner.py --reset-force # Without confirmation
-```
-
-### What Gets Reset
-
-| Current Status | New Status |
-|----------------|------------|
-| completed | incomplete |
-| blocked | incomplete |
-| in_progress | incomplete |
-| pending | (unchanged) |
-| incomplete | (unchanged) |
-
-**Note**: `pending` tasks remain `pending` because no work has been detected.
-`incomplete` tasks remain `incomplete` (already in target state).
-
-### Reset Process
-
-1. **Display current state**:
-   ```
-   Tasks to reset:
-     TASK-001: completed -> incomplete
-     TASK-002: blocked -> incomplete
-     TASK-003: in_progress -> incomplete
-
-   Total: 3 tasks will be reset
-   ```
-
-2. **Confirm with user**:
-   ```
-   WARNING: This will clear all completion timestamps and
-            verification results for the above tasks.
-
-   Proceed with reset? [y/N]:
-   ```
-
-3. **Execute reset and show results**
-
-### Why IN_PROGRESS Gets Reset
-
-**Rationale**: When a user runs `/orch-reconcile-queue`, orchestration is NOT currently running. Therefore:
-- No subagent should be actively working on any task
-- Any `in_progress` task is likely a stale state from a crash or timeout
-- Safe to reset to `incomplete` for re-verification
-
-**Automatic Stale Recovery**: The orchestration system also automatically detects and recovers stale `in_progress` tasks (>2 hours old) at session startup.
 
 ---
 

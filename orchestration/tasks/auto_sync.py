@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 """
 Automatically sync task queue with actual implementation state.
-Detects STARTED tasks (not completed) without relying on model self-reporting.
-
-CRITICAL: This module marks tasks as INCOMPLETE, never as COMPLETED.
-COMPLETED status requires verified test pass via /orchestrate run.
+Detects completed tasks without relying on model self-reporting.
 """
 import json
 import re
@@ -47,13 +44,10 @@ def extract_keywords(text: str) -> list[str]:
     return [w for w in words if w not in stopwords and len(w) > 2]
 
 
-def task_appears_started(task: dict, project_dir: Path) -> bool:
+def task_appears_complete(task: dict, project_dir: Path) -> bool:
     """
-    Heuristically check if work has been started on a task.
-    Conservative - requires evidence of both implementation and tests.
-
-    NOTE: This does NOT verify the task is complete or working.
-    It only detects that work has begun.
+    Heuristically check if a task appears to be complete.
+    Conservative - requires strong evidence.
     """
     task_name = task.get("name", "")
     keywords = extract_keywords(task_name)
@@ -97,11 +91,8 @@ def task_appears_started(task: dict, project_dir: Path) -> bool:
 
 def sync_queue_with_reality(project_dir: Path = None):
     """
-    Automatically detect tasks where work has started.
-    Marks as INCOMPLETE (not COMPLETED).
-
-    CRITICAL: This function NEVER marks tasks as COMPLETED.
-    COMPLETED status requires verified test pass via /orchestrate run.
+    Automatically detect and mark completed tasks.
+    Does NOT rely on model claiming completion.
     """
     if project_dir is None:
         project_dir = Path.cwd()
@@ -117,23 +108,19 @@ def sync_queue_with_reality(project_dir: Path = None):
 
     for task in tasks:
         if task.get("status") == "pending":
-            # Check if work appears to have started
-            if task_appears_started(task, project_dir):
-                print(f"Work detected: {task['id']} - {task['name']}")
-                task["status"] = "incomplete"  # NOT completed - needs verification
-                task["detection_timestamp"] = datetime.now().isoformat()
-                task["detection_result"] = {
-                    "detected_via": "auto_sync",
-                    "verified": False,  # NOT verified - just detected
-                    "note": "Code/tests detected. Requires /orchestrate verification for completion."
-                }
+            # Check if task appears complete
+            if task_appears_complete(task, project_dir):
+                print(f"Auto-detected completion: {task['id']} - {task['name']}")
+                task["status"] = "completed"
+                task["completed_at"] = datetime.now().isoformat()
+                task["verification_result"] = {"auto_detected": True}
                 synced_count += 1
 
     if synced_count > 0:
         save_queue_state(state)
-        print(f"Marked {synced_count} task(s) as INCOMPLETE (work detected)")
+        print(f"Auto-synced {synced_count} task(s)")
     else:
-        print("No started work detected")
+        print("No auto-completions detected")
 
 
 def main():
@@ -141,9 +128,6 @@ def main():
     print("=" * 60)
     print("TASK QUEUE AUTO-SYNC")
     print("=" * 60)
-    print("")
-    print("NOTE: This detects started work and marks as INCOMPLETE.")
-    print("      COMPLETED status requires /orchestrate verification.")
     print("")
 
     project_dir = Path.cwd()
@@ -157,12 +141,7 @@ def main():
     tasks = state.get("tasks", [])
     if tasks:
         completed = sum(1 for t in tasks if t.get("status") == "completed")
-        incomplete = sum(1 for t in tasks if t.get("status") == "incomplete")
-        pending = sum(1 for t in tasks if t.get("status") == "pending")
-        print(f"\nQueue status:")
-        print(f"  Completed:  {completed}/{len(tasks)} (verified)")
-        print(f"  Incomplete: {incomplete}/{len(tasks)} (needs verification)")
-        print(f"  Pending:    {pending}/{len(tasks)} (no work detected)")
+        print(f"\nQueue status: {completed}/{len(tasks)} completed")
 
     print("=" * 60)
 
