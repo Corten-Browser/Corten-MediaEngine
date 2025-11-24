@@ -520,7 +520,7 @@
       "description": "Implement the core MediaEngine trait with all session management and playback control methods",
       "phase": "Phase 1",
       "priority": "critical",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "difficulty": "hard",
@@ -531,7 +531,11 @@
         "play/pause/seek work correctly",
         "Volume and mute controls functional",
         "Duration and current time tracking accurate"
-      ]
+      ],
+      "detection_timestamp": "2025-11-24T20:03:34.695914Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/media_engine/src/engine.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. MediaEngineImpl implements MediaEngine trait with create_session, load_source, play, pause, seek, set_volume, destroy_session. Tests included. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-020",
@@ -693,11 +697,15 @@
       "description": "Coordinate media pipeline components: source \u2192 demuxer \u2192 decoder \u2192 sync \u2192 output",
       "phase": "Phase 1",
       "priority": "critical",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "difficulty": "hard",
-      "estimated_loc": "2000-3000"
+      "estimated_loc": "2000-3000",
+      "detection_timestamp": "2025-11-24T20:03:34.695914Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/media_pipeline/src/pipeline.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. MediaPipeline with state machine (Idle\u2192Loading\u2192Ready\u2192Running\u2192Stopped), load_source, start, stop, seek methods, video/audio queues. Tests included. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-030",
@@ -717,11 +725,15 @@
       "description": "Common demuxer interface for all container formats",
       "phase": "Phase 1",
       "priority": "critical",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "difficulty": "medium",
-      "estimated_loc": "1000-1500"
+      "estimated_loc": "1000-1500",
+      "detection_timestamp": "2025-11-24T20:03:34.695914Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/format_parsers/src/demuxer.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. Demuxer trait with parse(), get_video_track(), get_audio_track() methods. Used by MP4, Ogg parsers. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-032",
@@ -729,11 +741,15 @@
       "description": "Common decoder interface for all video and audio codecs",
       "phase": "Phase 1",
       "priority": "critical",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "difficulty": "medium",
-      "estimated_loc": "1000-1500"
+      "estimated_loc": "1000-1500",
+      "detection_timestamp": "2025-11-24T20:03:34.695914Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/shared_types/src/traits.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. VideoDecoder and AudioDecoder traits with decode(), flush() methods. DecoderFactory pattern in video_decoders and audio_decoders. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-033",
@@ -741,7 +757,7 @@
       "description": "Synchronize audio and video streams within \u00b140ms tolerance",
       "phase": "Phase 1",
       "priority": "critical",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "difficulty": "hard",
@@ -751,7 +767,11 @@
         "Handle frame drops gracefully",
         "Support variable frame rates",
         "Handle discontinuities (seeks, stream switches)"
-      ]
+      ],
+      "detection_timestamp": "2025-11-24T20:03:34.695914Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/media_pipeline/src/sync.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. AVSyncController with \u00b140ms threshold, SyncDecision enum (Display, Drop, Wait). Full sync logic with tests. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-034",
@@ -1725,7 +1745,7 @@
     }
   ],
   "completed_order": [],
-  "last_updated": "2025-11-24T19:34:54.478529Z",
+  "last_updated": "2025-11-24T20:03:34.695914Z",
   "initialized": true,
   "spec_file": "specifications/media-engine-specification.md",
   "spec_files": [
