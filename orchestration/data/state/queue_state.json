@@ -6,13 +6,18 @@
       "description": "Parse MP4 container format (moov, mdat boxes) and extract audio/video tracks with H.264, H.265, AV1, AAC, MP3, Opus codecs",
       "phase": "Phase 1",
       "priority": "critical",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "difficulty": "hard",
       "estimated_loc": "2000-3000",
       "recommended_libraries": [
-        {"name": "mp4", "version": "0.14", "purpose": "MP4 parsing", "registry_url": "https://crates.io/crates/mp4"}
+        {
+          "name": "mp4",
+          "version": "0.14",
+          "purpose": "MP4 parsing",
+          "registry_url": "https://crates.io/crates/mp4"
+        }
       ],
       "acceptance_criteria": [
         "Parse moov/mdat boxes correctly",
@@ -21,9 +26,20 @@
         "Support fragmented MP4 (fMP4)"
       ],
       "test_strategy": {
-        "unit_tests": ["Box parsing", "Track extraction", "Duration calculation"],
-        "integration_tests": ["Full MP4 file parsing", "Streaming MP4 parsing"]
-      }
+        "unit_tests": [
+          "Box parsing",
+          "Track extraction",
+          "Duration calculation"
+        ],
+        "integration_tests": [
+          "Full MP4 file parsing",
+          "Streaming MP4 parsing"
+        ]
+      },
+      "detection_timestamp": "2025-11-24T19:34:54.478529Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/format_parsers/src/mp4.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-002",
@@ -37,7 +53,12 @@
       "difficulty": "hard",
       "estimated_loc": "1500-2500",
       "recommended_libraries": [
-        {"name": "webm-iterable", "version": "0.6", "purpose": "WebM parsing", "registry_url": "https://crates.io/crates/webm-iterable"}
+        {
+          "name": "webm-iterable",
+          "version": "0.6",
+          "purpose": "WebM parsing",
+          "registry_url": "https://crates.io/crates/webm-iterable"
+        }
       ],
       "acceptance_criteria": [
         "Parse EBML header and Segment",
@@ -46,8 +67,13 @@
         "Support seeking via Cues element"
       ],
       "test_strategy": {
-        "unit_tests": ["EBML parsing", "Track info extraction"],
-        "integration_tests": ["Full WebM file parsing"]
+        "unit_tests": [
+          "EBML parsing",
+          "Track info extraction"
+        ],
+        "integration_tests": [
+          "Full WebM file parsing"
+        ]
       }
     },
     {
@@ -56,19 +82,28 @@
       "description": "Parse Ogg container format for Theora video and Vorbis/Opus audio",
       "phase": "Phase 1",
       "priority": "high",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "difficulty": "medium",
       "estimated_loc": "1000-1500",
       "recommended_libraries": [
-        {"name": "ogg", "version": "0.9", "purpose": "Ogg container", "registry_url": "https://crates.io/crates/ogg"}
+        {
+          "name": "ogg",
+          "version": "0.9",
+          "purpose": "Ogg container",
+          "registry_url": "https://crates.io/crates/ogg"
+        }
       ],
       "acceptance_criteria": [
         "Parse Ogg pages and segments",
         "Identify Theora, Vorbis, Opus streams",
         "Support chained Ogg files"
-      ]
+      ],
+      "detection_timestamp": "2025-11-24T19:34:54.478529Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/format_parsers/src/ogg.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-004",
@@ -82,7 +117,12 @@
       "difficulty": "hard",
       "estimated_loc": "2000-3000",
       "recommended_libraries": [
-        {"name": "matroska", "version": "0.15", "purpose": "MKV parsing", "registry_url": "https://crates.io/crates/matroska"}
+        {
+          "name": "matroska",
+          "version": "0.15",
+          "purpose": "MKV parsing",
+          "registry_url": "https://crates.io/crates/matroska"
+        }
       ],
       "acceptance_criteria": [
         "Parse complete EBML structure",
@@ -127,7 +167,7 @@
       "description": "Decode H.264/AVC video streams with profile/level support and hardware acceleration",
       "phase": "Phase 1",
       "priority": "critical",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "template_id": "media-video-decoder",
@@ -135,8 +175,18 @@
       "difficulty": "expert",
       "estimated_loc": "10000-20000",
       "recommended_libraries": [
-        {"name": "openh264", "version": "0.3", "purpose": "H.264 decoder", "registry_url": "https://crates.io/crates/openh264"},
-        {"name": "ffmpeg-next", "version": "6.0", "purpose": "FFmpeg bindings (fallback)", "registry_url": "https://crates.io/crates/ffmpeg-next"}
+        {
+          "name": "openh264",
+          "version": "0.3",
+          "purpose": "H.264 decoder",
+          "registry_url": "https://crates.io/crates/openh264"
+        },
+        {
+          "name": "ffmpeg-next",
+          "version": "6.0",
+          "purpose": "FFmpeg bindings (fallback)",
+          "registry_url": "https://crates.io/crates/ffmpeg-next"
+        }
       ],
       "acceptance_criteria": [
         "Decode H.264 Baseline, Main, High profiles",
@@ -146,13 +196,30 @@
         "1080p@30fps in real-time"
       ],
       "test_strategy": {
-        "unit_tests": ["Codec initialization", "Frame decoding", "Color space conversion"],
-        "integration_tests": ["Full video stream decoding", "Hardware/software switching"]
+        "unit_tests": [
+          "Codec initialization",
+          "Frame decoding",
+          "Color space conversion"
+        ],
+        "integration_tests": [
+          "Full video stream decoding",
+          "Hardware/software switching"
+        ]
       },
       "common_pitfalls": [
-        {"issue": "Memory leaks from unreleased frames", "solution": "Implement Drop trait, release FFmpeg resources"},
-        {"issue": "Dropped frames under load", "solution": "Use frame buffer pool, prioritize I-frames"}
-      ]
+        {
+          "issue": "Memory leaks from unreleased frames",
+          "solution": "Implement Drop trait, release FFmpeg resources"
+        },
+        {
+          "issue": "Dropped frames under load",
+          "solution": "Use frame buffer pool, prioritize I-frames"
+        }
+      ],
+      "detection_timestamp": "2025-11-24T19:34:54.478529Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/video_decoders/src/h264.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-008",
@@ -167,7 +234,12 @@
       "difficulty": "expert",
       "estimated_loc": "8000-15000",
       "recommended_libraries": [
-        {"name": "ffmpeg-next", "version": "6.0", "purpose": "H.265 decoding via FFmpeg", "registry_url": "https://crates.io/crates/ffmpeg-next"}
+        {
+          "name": "ffmpeg-next",
+          "version": "6.0",
+          "purpose": "H.265 decoding via FFmpeg",
+          "registry_url": "https://crates.io/crates/ffmpeg-next"
+        }
       ],
       "acceptance_criteria": [
         "Decode H.265 Main, Main 10 profiles",
@@ -188,7 +260,12 @@
       "difficulty": "hard",
       "estimated_loc": "3000-5000",
       "recommended_libraries": [
-        {"name": "vpx", "version": "0.1", "purpose": "VP8/VP9 codec bindings", "registry_url": "https://crates.io/crates/vpx"}
+        {
+          "name": "vpx",
+          "version": "0.1",
+          "purpose": "VP8/VP9 codec bindings",
+          "registry_url": "https://crates.io/crates/vpx"
+        }
       ]
     },
     {
@@ -197,20 +274,29 @@
       "description": "Decode VP9 video codec with profile support",
       "phase": "Phase 1",
       "priority": "critical",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "template_id": "media-video-decoder",
       "difficulty": "hard",
       "estimated_loc": "4000-6000",
       "recommended_libraries": [
-        {"name": "vpx", "version": "0.1", "purpose": "VP9 codec bindings", "registry_url": "https://crates.io/crates/vpx"}
+        {
+          "name": "vpx",
+          "version": "0.1",
+          "purpose": "VP9 codec bindings",
+          "registry_url": "https://crates.io/crates/vpx"
+        }
       ],
       "acceptance_criteria": [
         "Decode VP9 Profile 0, 1, 2",
         "Support 4K resolution",
         "Handle frame superframes"
-      ]
+      ],
+      "detection_timestamp": "2025-11-24T19:34:54.478529Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/video_decoders/src/vp9.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-011",
@@ -218,21 +304,35 @@
       "description": "Decode AV1 video codec with profile/level support",
       "phase": "Phase 1",
       "priority": "critical",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "template_id": "media-video-decoder",
       "difficulty": "expert",
       "estimated_loc": "5000-8000",
       "recommended_libraries": [
-        {"name": "dav1d", "version": "0.10", "purpose": "Fast AV1 decoder", "registry_url": "https://crates.io/crates/dav1d"},
-        {"name": "rav1e", "version": "0.7", "purpose": "Pure Rust AV1", "registry_url": "https://crates.io/crates/rav1e"}
+        {
+          "name": "dav1d",
+          "version": "0.10",
+          "purpose": "Fast AV1 decoder",
+          "registry_url": "https://crates.io/crates/dav1d"
+        },
+        {
+          "name": "rav1e",
+          "version": "0.7",
+          "purpose": "Pure Rust AV1",
+          "registry_url": "https://crates.io/crates/rav1e"
+        }
       ],
       "acceptance_criteria": [
         "Decode AV1 Main, High, Professional profiles",
         "Support Film Grain synthesis",
         "Hardware acceleration when available"
-      ]
+      ],
+      "detection_timestamp": "2025-11-24T19:34:54.478529Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/video_decoders/src/av1.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-012",
@@ -252,7 +352,7 @@
       "description": "Decode AAC audio with profile, sample rate, and channel support",
       "phase": "Phase 1",
       "priority": "critical",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "template_id": "media-audio-decoder",
@@ -260,8 +360,18 @@
       "difficulty": "hard",
       "estimated_loc": "6000-10000",
       "recommended_libraries": [
-        {"name": "fdk-aac", "version": "0.6", "purpose": "AAC codec", "registry_url": "https://crates.io/crates/fdk-aac"},
-        {"name": "symphonia", "version": "0.5", "purpose": "Pure Rust audio", "registry_url": "https://crates.io/crates/symphonia"}
+        {
+          "name": "fdk-aac",
+          "version": "0.6",
+          "purpose": "AAC codec",
+          "registry_url": "https://crates.io/crates/fdk-aac"
+        },
+        {
+          "name": "symphonia",
+          "version": "0.5",
+          "purpose": "Pure Rust audio",
+          "registry_url": "https://crates.io/crates/symphonia"
+        }
       ],
       "acceptance_criteria": [
         "Decode AAC-LC, HE-AAC, HE-AACv2 profiles",
@@ -269,9 +379,20 @@
         "Support mono, stereo, 5.1 surround"
       ],
       "test_strategy": {
-        "unit_tests": ["Decoder initialization", "Packet decoding", "Sample format conversion"],
-        "integration_tests": ["Full audio file decoding", "Multi-codec support"]
-      }
+        "unit_tests": [
+          "Decoder initialization",
+          "Packet decoding",
+          "Sample format conversion"
+        ],
+        "integration_tests": [
+          "Full audio file decoding",
+          "Multi-codec support"
+        ]
+      },
+      "detection_timestamp": "2025-11-24T19:34:54.478529Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/audio_decoders/src/aac_decoder.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-014",
@@ -279,21 +400,35 @@
       "description": "Decode MP3 audio with layer and bitrate support",
       "phase": "Phase 1",
       "priority": "critical",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "template_id": "media-audio-decoder",
       "difficulty": "medium",
       "estimated_loc": "2000-3000",
       "recommended_libraries": [
-        {"name": "minimp3", "version": "0.5", "purpose": "MP3 decoder", "registry_url": "https://crates.io/crates/minimp3"},
-        {"name": "symphonia", "version": "0.5", "purpose": "Pure Rust MP3", "registry_url": "https://crates.io/crates/symphonia"}
+        {
+          "name": "minimp3",
+          "version": "0.5",
+          "purpose": "MP3 decoder",
+          "registry_url": "https://crates.io/crates/minimp3"
+        },
+        {
+          "name": "symphonia",
+          "version": "0.5",
+          "purpose": "Pure Rust MP3",
+          "registry_url": "https://crates.io/crates/symphonia"
+        }
       ],
       "acceptance_criteria": [
         "Decode MPEG Layer III",
         "Support CBR and VBR",
         "Support ID3 tags"
-      ]
+      ],
+      "detection_timestamp": "2025-11-24T19:34:54.478529Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/audio_decoders/src/mp3_decoder.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-015",
@@ -301,20 +436,29 @@
       "description": "Decode Opus audio with sample rate, channels, and application mode support",
       "phase": "Phase 1",
       "priority": "critical",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "template_id": "media-audio-decoder",
       "difficulty": "hard",
       "estimated_loc": "3000-4000",
       "recommended_libraries": [
-        {"name": "opus", "version": "0.3", "purpose": "Opus codec", "registry_url": "https://crates.io/crates/opus"}
+        {
+          "name": "opus",
+          "version": "0.3",
+          "purpose": "Opus codec",
+          "registry_url": "https://crates.io/crates/opus"
+        }
       ],
       "acceptance_criteria": [
         "Decode Opus at 8-48kHz sample rates",
         "Support mono and stereo",
         "Support VOIP, Audio, and LowDelay applications"
-      ]
+      ],
+      "detection_timestamp": "2025-11-24T19:34:54.478529Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/audio_decoders/src/opus_decoder.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-016",
@@ -329,7 +473,12 @@
       "difficulty": "medium",
       "estimated_loc": "2000-3000",
       "recommended_libraries": [
-        {"name": "lewton", "version": "0.10", "purpose": "Vorbis decoder", "registry_url": "https://crates.io/crates/lewton"}
+        {
+          "name": "lewton",
+          "version": "0.10",
+          "purpose": "Vorbis decoder",
+          "registry_url": "https://crates.io/crates/lewton"
+        }
       ]
     },
     {
@@ -345,7 +494,12 @@
       "difficulty": "medium",
       "estimated_loc": "1500-2500",
       "recommended_libraries": [
-        {"name": "symphonia", "version": "0.5", "purpose": "FLAC decoding", "registry_url": "https://crates.io/crates/symphonia"}
+        {
+          "name": "symphonia",
+          "version": "0.5",
+          "purpose": "FLAC decoding",
+          "registry_url": "https://crates.io/crates/symphonia"
+        }
       ]
     },
     {
@@ -366,7 +520,7 @@
       "description": "Implement the core MediaEngine trait with all session management and playback control methods",
       "phase": "Phase 1",
       "priority": "critical",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "difficulty": "hard",
@@ -377,7 +531,11 @@
         "play/pause/seek work correctly",
         "Volume and mute controls functional",
         "Duration and current time tracking accurate"
-      ]
+      ],
+      "detection_timestamp": "2025-11-24T20:03:34.695914Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/media_engine/src/engine.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. MediaEngineImpl implements MediaEngine trait with create_session, load_source, play, pause, seek, set_volume, destroy_session. Tests included. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-020",
@@ -385,7 +543,7 @@
       "description": "Implement session state machine with Idle, Loading, Ready, Playing, Paused, Seeking, Ended, Error states",
       "phase": "Phase 1",
       "priority": "critical",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "difficulty": "hard",
@@ -394,7 +552,11 @@
         "State transitions are valid and enforced",
         "Concurrent sessions isolated",
         "Session cleanup releases all resources"
-      ]
+      ],
+      "detection_timestamp": "2025-11-24T19:34:54.478529Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/media_session/src/state.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-021",
@@ -409,8 +571,18 @@
       "difficulty": "medium",
       "estimated_loc": "1500-2500",
       "recommended_libraries": [
-        {"name": "hyper", "version": "1.0", "purpose": "HTTP client", "registry_url": "https://crates.io/crates/hyper"},
-        {"name": "tokio", "version": "1.35", "purpose": "Async runtime", "registry_url": "https://crates.io/crates/tokio"}
+        {
+          "name": "hyper",
+          "version": "1.0",
+          "purpose": "HTTP client",
+          "registry_url": "https://crates.io/crates/hyper"
+        },
+        {
+          "name": "tokio",
+          "version": "1.35",
+          "purpose": "Async runtime",
+          "registry_url": "https://crates.io/crates/tokio"
+        }
       ]
     },
     {
@@ -467,7 +639,12 @@
       "difficulty": "expert",
       "estimated_loc": "4000-6000",
       "recommended_libraries": [
-        {"name": "webrtc", "version": "0.9", "purpose": "WebRTC support", "registry_url": "https://crates.io/crates/webrtc"}
+        {
+          "name": "webrtc",
+          "version": "0.9",
+          "purpose": "WebRTC support",
+          "registry_url": "https://crates.io/crates/webrtc"
+        }
       ]
     },
     {
@@ -488,11 +665,15 @@
       "description": "Implement VideoFrame struct with width, height, format, data, timestamp, duration, metadata",
       "phase": "Phase 1",
       "priority": "critical",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "difficulty": "medium",
-      "estimated_loc": "500-800"
+      "estimated_loc": "500-800",
+      "detection_timestamp": "2025-11-24T19:34:54.478529Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/shared_types/src/media.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-028",
@@ -500,23 +681,31 @@
       "description": "Implement AudioBuffer struct with format, sample_rate, channels, samples, timestamp, duration",
       "phase": "Phase 1",
       "priority": "critical",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "difficulty": "medium",
-      "estimated_loc": "500-800"
+      "estimated_loc": "500-800",
+      "detection_timestamp": "2025-11-24T19:34:54.478529Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/shared_types/src/media.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-029",
       "name": "Pipeline orchestration module",
-      "description": "Coordinate media pipeline components: source → demuxer → decoder → sync → output",
+      "description": "Coordinate media pipeline components: source \u2192 demuxer \u2192 decoder \u2192 sync \u2192 output",
       "phase": "Phase 1",
       "priority": "critical",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "difficulty": "hard",
-      "estimated_loc": "2000-3000"
+      "estimated_loc": "2000-3000",
+      "detection_timestamp": "2025-11-24T20:03:34.695914Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/media_pipeline/src/pipeline.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. MediaPipeline with state machine (Idle\u2192Loading\u2192Ready\u2192Running\u2192Stopped), load_source, start, stop, seek methods, video/audio queues. Tests included. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-030",
@@ -536,11 +725,15 @@
       "description": "Common demuxer interface for all container formats",
       "phase": "Phase 1",
       "priority": "critical",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "difficulty": "medium",
-      "estimated_loc": "1000-1500"
+      "estimated_loc": "1000-1500",
+      "detection_timestamp": "2025-11-24T20:03:34.695914Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/format_parsers/src/demuxer.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. Demuxer trait with parse(), get_video_track(), get_audio_track() methods. Used by MP4, Ogg parsers. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-032",
@@ -548,29 +741,37 @@
       "description": "Common decoder interface for all video and audio codecs",
       "phase": "Phase 1",
       "priority": "critical",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "difficulty": "medium",
-      "estimated_loc": "1000-1500"
+      "estimated_loc": "1000-1500",
+      "detection_timestamp": "2025-11-24T20:03:34.695914Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/shared_types/src/traits.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. VideoDecoder and AudioDecoder traits with decode(), flush() methods. DecoderFactory pattern in video_decoders and audio_decoders. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-033",
       "name": "A/V synchronization controller",
-      "description": "Synchronize audio and video streams within ±40ms tolerance",
+      "description": "Synchronize audio and video streams within \u00b140ms tolerance",
       "phase": "Phase 1",
       "priority": "critical",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "difficulty": "hard",
       "estimated_loc": "2000-3000",
       "acceptance_criteria": [
-        "Audio/video sync within ±40ms",
+        "Audio/video sync within \u00b140ms",
         "Handle frame drops gracefully",
         "Support variable frame rates",
         "Handle discontinuities (seeks, stream switches)"
-      ]
+      ],
+      "detection_timestamp": "2025-11-24T20:03:34.695914Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/media_pipeline/src/sync.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. AVSyncController with \u00b140ms threshold, SyncDecision enum (Display, Drop, Wait). Full sync logic with tests. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-034",
@@ -578,7 +779,7 @@
       "description": "Manage memory buffers for frames, samples, and packets with configurable limits",
       "phase": "Phase 1",
       "priority": "high",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "difficulty": "hard",
@@ -587,7 +788,11 @@
         "Memory usage <500MB for 4K playback",
         "Buffer pools reduce allocations",
         "Graceful handling of memory pressure"
-      ]
+      ],
+      "detection_timestamp": "2025-11-24T19:34:54.478529Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/buffer_manager/",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-035",
@@ -595,11 +800,15 @@
       "description": "Implement efficient ring buffer for streaming media data",
       "phase": "Phase 1",
       "priority": "high",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "difficulty": "medium",
-      "estimated_loc": "800-1200"
+      "estimated_loc": "800-1200",
+      "detection_timestamp": "2025-11-24T19:34:54.478529Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/buffer_manager/src/ring.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-036",
@@ -607,11 +816,15 @@
       "description": "Cache decoded frames for seeking and buffer management",
       "phase": "Phase 1",
       "priority": "high",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "difficulty": "medium",
-      "estimated_loc": "1000-1500"
+      "estimated_loc": "1000-1500",
+      "detection_timestamp": "2025-11-24T19:34:54.478529Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/buffer_manager/src/cache.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-037",
@@ -625,10 +838,30 @@
       "difficulty": "hard",
       "estimated_loc": "3000-5000",
       "recommended_libraries": [
-        {"name": "gstreamer", "version": "0.22", "purpose": "GStreamer bindings", "registry_url": "https://crates.io/crates/gstreamer"},
-        {"name": "gstreamer-app", "version": "0.22", "purpose": "AppSink/AppSrc", "registry_url": "https://crates.io/crates/gstreamer-app"},
-        {"name": "gstreamer-video", "version": "0.22", "purpose": "Video utilities", "registry_url": "https://crates.io/crates/gstreamer-video"},
-        {"name": "gstreamer-audio", "version": "0.22", "purpose": "Audio utilities", "registry_url": "https://crates.io/crates/gstreamer-audio"}
+        {
+          "name": "gstreamer",
+          "version": "0.22",
+          "purpose": "GStreamer bindings",
+          "registry_url": "https://crates.io/crates/gstreamer"
+        },
+        {
+          "name": "gstreamer-app",
+          "version": "0.22",
+          "purpose": "AppSink/AppSrc",
+          "registry_url": "https://crates.io/crates/gstreamer-app"
+        },
+        {
+          "name": "gstreamer-video",
+          "version": "0.22",
+          "purpose": "Video utilities",
+          "registry_url": "https://crates.io/crates/gstreamer-video"
+        },
+        {
+          "name": "gstreamer-audio",
+          "version": "0.22",
+          "purpose": "Audio utilities",
+          "registry_url": "https://crates.io/crates/gstreamer-audio"
+        }
       ],
       "acceptance_criteria": [
         "Initialize GStreamer pipeline",
@@ -715,7 +948,12 @@
       "difficulty": "expert",
       "estimated_loc": "3000-5000",
       "recommended_libraries": [
-        {"name": "va-rs", "version": "0.1", "purpose": "VA-API bindings", "registry_url": "https://crates.io/crates/va-rs"}
+        {
+          "name": "va-rs",
+          "version": "0.1",
+          "purpose": "VA-API bindings",
+          "registry_url": "https://crates.io/crates/va-rs"
+        }
       ],
       "acceptance_criteria": [
         "4K@60fps with <10% CPU",
@@ -781,7 +1019,12 @@
       "difficulty": "expert",
       "estimated_loc": "5000-8000",
       "recommended_libraries": [
-        {"name": "webrtc", "version": "0.9", "purpose": "WebRTC stack", "registry_url": "https://crates.io/crates/webrtc"}
+        {
+          "name": "webrtc",
+          "version": "0.9",
+          "purpose": "WebRTC stack",
+          "registry_url": "https://crates.io/crates/webrtc"
+        }
       ],
       "acceptance_criteria": [
         "Encode VP8, VP9, H.264 for WebRTC",
@@ -796,7 +1039,7 @@
       "description": "Implement RTP packetization and RTCP feedback for WebRTC",
       "phase": "Milestone 5",
       "priority": "high",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "difficulty": "hard",
@@ -805,7 +1048,11 @@
         "RTP packet assembly/disassembly",
         "RTCP feedback (PLI, FIR, REMB)",
         "Handle packet loss and reordering"
-      ]
+      ],
+      "detection_timestamp": "2025-11-24T19:34:54.478529Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/webrtc_integration/src/rtp.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-048",
@@ -813,11 +1060,15 @@
       "description": "Implement adaptive jitter buffer for smooth WebRTC playback",
       "phase": "Milestone 5",
       "priority": "high",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "difficulty": "hard",
-      "estimated_loc": "2000-3000"
+      "estimated_loc": "2000-3000",
+      "detection_timestamp": "2025-11-24T19:34:54.478529Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/webrtc_integration/src/jitter_buffer.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-049",
@@ -837,7 +1088,7 @@
       "description": "Implement Encrypted Media Extensions API for DRM playback",
       "phase": "Milestone 6",
       "priority": "high",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "difficulty": "expert",
@@ -847,7 +1098,11 @@
         "License request/response handling",
         "Key status events",
         "Support Widevine key system"
-      ]
+      ],
+      "detection_timestamp": "2025-11-24T19:34:54.478529Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/drm_support/src/eme.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-051",
@@ -855,14 +1110,23 @@
       "description": "Implement Content Decryption Module interface for DRM",
       "phase": "Milestone 6",
       "priority": "high",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "difficulty": "expert",
       "estimated_loc": "3000-5000",
       "recommended_libraries": [
-        {"name": "widevine", "version": "0.1", "purpose": "Widevine CDM", "registry_url": "https://crates.io/crates/widevine"}
-      ]
+        {
+          "name": "widevine",
+          "version": "0.1",
+          "purpose": "Widevine CDM",
+          "registry_url": "https://crates.io/crates/widevine"
+        }
+      ],
+      "detection_timestamp": "2025-11-24T19:34:54.478529Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/drm_support/src/cdm.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-052",
@@ -1018,8 +1282,18 @@
       "difficulty": "medium",
       "estimated_loc": "1000-1500",
       "recommended_libraries": [
-        {"name": "crossbeam-channel", "version": "0.5", "purpose": "MPMC channels", "registry_url": "https://crates.io/crates/crossbeam-channel"},
-        {"name": "tokio", "version": "1.35", "purpose": "Async channels", "registry_url": "https://crates.io/crates/tokio"}
+        {
+          "name": "crossbeam-channel",
+          "version": "0.5",
+          "purpose": "MPMC channels",
+          "registry_url": "https://crates.io/crates/crossbeam-channel"
+        },
+        {
+          "name": "tokio",
+          "version": "1.35",
+          "purpose": "Async channels",
+          "registry_url": "https://crates.io/crates/tokio"
+        }
       ]
     },
     {
@@ -1189,7 +1463,12 @@
       "difficulty": "medium",
       "estimated_loc": "1000-1500",
       "recommended_libraries": [
-        {"name": "metrics", "version": "0.21", "purpose": "Performance metrics", "registry_url": "https://crates.io/crates/metrics"}
+        {
+          "name": "metrics",
+          "version": "0.21",
+          "purpose": "Performance metrics",
+          "registry_url": "https://crates.io/crates/metrics"
+        }
       ]
     },
     {
@@ -1222,14 +1501,23 @@
       "description": "Define comprehensive error types: UnsupportedFormat, Codec, Network, DRM, Hardware, Memory, State",
       "phase": "Phase 1",
       "priority": "high",
-      "status": "pending",
+      "status": "incomplete",
       "extraction_method": "llm",
       "detected_language": "Rust",
       "difficulty": "easy",
       "estimated_loc": "300-500",
       "recommended_libraries": [
-        {"name": "thiserror", "version": "1.0", "purpose": "Error derive", "registry_url": "https://crates.io/crates/thiserror"}
-      ]
+        {
+          "name": "thiserror",
+          "version": "1.0",
+          "purpose": "Error derive",
+          "registry_url": "https://crates.io/crates/thiserror"
+        }
+      ],
+      "detection_timestamp": "2025-11-24T19:34:54.478529Z",
+      "detection_method": "reconciliation",
+      "detected_location": "components/shared_types/src/errors.rs",
+      "reconciliation_notes": "Work detected via /orch-reconcile-queue. Requires /orchestrate verification."
     },
     {
       "id": "FEAT-080",
@@ -1391,7 +1679,12 @@
       "difficulty": "medium",
       "estimated_loc": "1500-2500",
       "recommended_libraries": [
-        {"name": "criterion", "version": "0.5", "purpose": "Benchmarking", "registry_url": "https://crates.io/crates/criterion"}
+        {
+          "name": "criterion",
+          "version": "0.5",
+          "purpose": "Benchmarking",
+          "registry_url": "https://crates.io/crates/criterion"
+        }
       ]
     },
     {
@@ -1418,7 +1711,12 @@
       "difficulty": "easy",
       "estimated_loc": "500-800",
       "recommended_libraries": [
-        {"name": "tracing", "version": "0.1", "purpose": "Logging/tracing", "registry_url": "https://crates.io/crates/tracing"}
+        {
+          "name": "tracing",
+          "version": "0.1",
+          "purpose": "Logging/tracing",
+          "registry_url": "https://crates.io/crates/tracing"
+        }
       ]
     },
     {
@@ -1447,7 +1745,7 @@
     }
   ],
   "completed_order": [],
-  "last_updated": "2025-11-24T07:30:00.000000",
+  "last_updated": "2025-11-24T20:03:34.695914Z",
   "initialized": true,
   "spec_file": "specifications/media-engine-specification.md",
   "spec_files": [
