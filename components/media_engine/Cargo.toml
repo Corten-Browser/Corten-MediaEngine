@@ -10,7 +10,7 @@ license = "MIT OR Apache-2.0"
 cortenbrowser-shared_types = { path = "../shared_types" }
 cortenbrowser-media_session = { path = "../media_session" }
 cortenbrowser-format_parsers = { path = "../format_parsers" }
-cortenbrowser-video_decoders = { path = "../video_decoders" }
+cortenbrowser-video_decoders = { path = "../video_decoders", default-features = false, features = ["h264", "av1"] }
 cortenbrowser-audio_decoders = { path = "../audio_decoders" }
 cortenbrowser-buffer_manager = { path = "../buffer_manager" }
 cortenbrowser-media_pipeline = { path = "../media_pipeline" }

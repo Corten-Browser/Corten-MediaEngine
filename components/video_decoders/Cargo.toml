@@ -26,7 +26,8 @@ tokio = { version = "1.35", features = ["sync"] }
 tokio = { version = "1.35", features = ["full", "test-util"] }
 
 [features]
-default = ["h264", "vp9", "av1"]
+# Default only includes h264 and av1 - vp9 requires vpx system lib with compatible bindgen
+default = ["h264", "av1"]
 h264 = ["openh264"]
 vp9 = ["vpx-sys"]
 av1 = ["dav1d"]

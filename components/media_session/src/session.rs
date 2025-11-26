@@ -16,7 +16,7 @@ pub struct MediaSession {
     /// Session creation time
     pub created_at: SystemTime,
     /// Last update time
-    pub updated_at: SystemTime,
+    pub updated_at: Arc<RwLock<SystemTime>>,
 }
 
 impl MediaSession {
@@ -27,7 +27,7 @@ impl MediaSession {
             id,
             state: Arc::new(RwLock::new(SessionState::Idle)),
             created_at: now,
-            updated_at: now,
+            updated_at: Arc::new(RwLock::new(now)),
         }
     }
 
@@ -36,9 +36,14 @@ impl MediaSession {
         self.state.read().clone()
     }
 
-    /// Updates the session state
-    pub fn set_state(&mut self, new_state: SessionState) {
+    /// Updates the session state (interior mutability - can be called on shared ref)
+    pub fn set_state(&self, new_state: SessionState) {
         *self.state.write() = new_state;
-        self.updated_at = SystemTime::now();
+        *self.updated_at.write() = SystemTime::now();
+    }
+
+    /// Gets the last update time
+    pub fn get_updated_at(&self) -> SystemTime {
+        *self.updated_at.read()
     }
 }

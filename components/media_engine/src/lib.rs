@@ -38,7 +38,7 @@
 //!     let session = engine.create_session(session_config).await?;
 //!
 //!     // Load media source
-//!     let source = MediaSource::Url("https://example.com/video.mp4".to_string());
+//!     let source = MediaSource::Url { url: "https://example.com/video.mp4".to_string() };
 //!     engine.load_source(session, source).await?;
 //!
 //!     // Play
